@@ -18,7 +18,7 @@
 
 <body class="font-sans antialiased dark:text-white/50">
     <!-- Navbar -->
-    <section class="bg-[#0F172A] w-full rounded-b-3xl">
+    <section class="bg-[#0F172A] w-full rounded-b-3xl z-10 relative">
         <div class="mx-auto max-w-[1320px] px-6 py-4 flex justify-between items-center">
             <!-- LEFT: LOGO -->
             <div class="flex items-center gap-3">
@@ -55,7 +55,19 @@
 
     <!-- Banner -->
     <section class="banner">
-    <div class="h-[400px] bg-[url('/images/baner.jpg')] bg-cover bg-center bg-no-repeat"></div>
+        <div
+            class="relative top-[-20px] z-0 h-[500px] bg-cover bg-bottom bg-no-repeat"
+            style="background-image: url('/images/baner.jpg');">
+            <!-- OVERLAY -->
+            <div class="absolute inset-0 bg-[#1552D8]/40"></div>
+
+
+            <!-- (optional) KONTEN DI ATAS OVERLAY -->
+            <div class="relative z-10 h-full flex items-center justify-center">
+                <!-- isi konten banner di sini -->
+            </div>
+        </div>
+        <div class="w-full " style=""></div>
     </section>
 </body>
 
