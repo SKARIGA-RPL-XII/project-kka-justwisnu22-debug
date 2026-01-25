@@ -12,7 +12,9 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                lumanosimo: ['Lumanosimo', 'cursive'],
+                bitter: ['Bitter', 'serif'],
+                montserrat: ['Montserrat', 'sans-serif'],
             },
         },
     },
