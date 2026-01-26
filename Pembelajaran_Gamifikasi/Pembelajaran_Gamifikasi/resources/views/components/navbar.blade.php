@@ -12,7 +12,7 @@
             <nav class="flex items-center gap-5">
                 <a href="{{ Auth::check() ? route('dashboard') : route('welcome') }}" class="text-white font-lumanosimo hover:text-gray-300">Home</a>
                 <a href="#" class="text-white font-lumanosimo hover:text-gray-300">Quest</a>
-                <a href="#" class="text-white font-lumanosimo hover:text-gray-300">Belajar</a>
+                <a href="{{ route('materials.index') }}" class="text-white font-lumanosimo hover:text-gray-300">Belajar</a>
                 <a href="#" class="text-white font-lumanosimo hover:text-gray-300">Badge</a>
             </nav>
 

@@ -83,7 +83,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'type' => 'required|string',
+            'description' => 'required|string|max:500',
             'content' => 'required|string',
         ]);
 
@@ -101,7 +101,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'type' => 'required|string',
+            'description' => 'required|string|max:500',
             'content' => 'required|string',
         ]);
 

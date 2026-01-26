@@ -40,13 +40,19 @@
                 <a href="{{ route('admin.materials.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tambah Materi</a>
             </div>
 
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <table class="min-w-full">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
@@ -54,8 +60,10 @@
                         @forelse($materials ?? [] as $material)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $material->id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $material->title }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $material->type }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">{{ $material->title }}</td>
+                            <td class="px-6 py-4">
+                                <div class="line-clamp-3 text-sm text-gray-600">{{ $material->description }}</div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a href="{{ route('admin.materials.edit', $material->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                 <form method="POST" action="{{ route('admin.materials.destroy', $material->id) }}" class="inline">
