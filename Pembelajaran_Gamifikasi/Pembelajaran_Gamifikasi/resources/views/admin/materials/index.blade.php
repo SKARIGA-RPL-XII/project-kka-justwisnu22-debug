@@ -9,7 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-100">
-    <nav class="bg-blue-600 text-white p-4">
+    <nav class="bg-[#0F172A] text-white p-4">
         <div class="flex justify-between items-center">
             <h1 class="text-xl font-bold">Admin Panel</h1>
             <div class="flex items-center gap-4">

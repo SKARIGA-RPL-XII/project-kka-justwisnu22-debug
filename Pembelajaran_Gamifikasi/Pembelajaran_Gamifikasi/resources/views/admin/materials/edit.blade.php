@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,8 +9,9 @@
     <link href="https://fonts.bunny.net/css?family=lumanosimo:400&family=bitter:400,500,600,700&family=montserrat:400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body class="font-sans antialiased bg-gray-100">
-    <nav class="bg-blue-600 text-white p-4">
+    <nav class="bg-[#0F172A] text-white p-4">
         <div class="flex justify-between items-center">
             <h1 class="text-xl font-bold">Admin Panel</h1>
             <div class="flex items-center gap-4">
@@ -47,31 +49,36 @@
                     <div class="space-y-6">
                         <div>
                             <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
-                            <input type="text" name="title" id="title" required 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                   value="{{ old('title', $material->title) }}">
+                            <input type="text" name="title" id="title" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{ old('title', $material->title) }}">
                             @error('title')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
                             <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                            <input type="text" name="description" id="description" required 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                   value="{{ old('description', $material->description) }}" placeholder="Deskripsi singkat untuk card user">
+                            <input type="text" name="description" id="description" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{ old('description', $material->description) }}" placeholder="Deskripsi singkat untuk card user">
                             @error('description')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
                             <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                            <textarea name="content" id="content" rows="12" required 
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                      placeholder="Isi materi lengkap...">{{ old('content', $material->content) }}</textarea>
+                            <textarea
+                                name="content"
+                                id="editor"
+                                rows="12"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            {{ old('content', $material->content) }}
+                            </textarea>
                             @error('content')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -85,5 +92,15 @@
             </div>
         </main>
     </div>
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
 </body>
+
 </html>

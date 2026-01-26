@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Material;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -66,6 +67,7 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
         
-        return view('dashboard');
+        $materials = Material::take(6)->get();
+        return view('dashboard', compact('materials'));
     }
 }

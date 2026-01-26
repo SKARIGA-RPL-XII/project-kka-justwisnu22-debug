@@ -171,45 +171,40 @@ hover:-translate-y-2 hover:shadow-2xl">
 
             <!-- GRID -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                @for ($i = 0; $i < 6; $i++)
-                    <div
-                    class="bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl transition
-hover:-translate-y-2 hover:shadow-2xl">
-
-
-                    <!-- TITLE -->
-                    <h3 class="font-bitter text-2xl mb-4">
-                        Materi HTML Dasar
-                    </h3>
-
-
-                    <!-- DESKRIPSI -->
-                    <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">
-                        Materi HTML dasar yang membahas konsep awal pembuatan website,
-                        seperti struktur dokumen, penggunaan tag, dan elemen penting
-                        pada halaman web ...
-                    </p>
-
-
-                    <!-- BUTTON -->
-                    <button
-                        class="bg-[#0B3FAF] hover:bg-[#0A3797] transition
-px-6 py-2 rounded-full text-sm">
-                        Mulai →
-                    </button>
+                @forelse($materials as $material)
+                    <div class="bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl transition hover:-translate-y-2 hover:shadow-2xl">
+                        <!-- TITLE -->
+                        <h3 class="font-bitter text-2xl mb-4">{{ $material->title }}</h3>
+                        
+                        <!-- DESKRIPSI -->
+                        <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">{{ $material->description }}</p>
+                        
+                        <!-- BUTTON -->
+                        @auth
+                            <a href="{{ route('materials.show', $material->id) }}" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm inline-block">
+                                Lihat Detail →
+                            </a>
+                        @else
+                            <button onclick="openLoginModal()" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm">
+                                Lihat Detail →
+                            </button>
+                        @endauth
+                    </div>
+                @empty
+                    <div class="col-span-full text-center py-8">
+                        <p class="text-gray-500">Belum ada materi tersedia</p>
+                    </div>
+                @endforelse
             </div>
-            @endfor
-        </div>
 
-
-        <!-- SEE MORE -->
-        <div class="flex justify-center mt-16">
-            <button
-                class="px-10 py-3 rounded-full bg-blue-600 text-white text-sm
-hover:bg-blue-700 transition">
-                See More...
-            </button>
-        </div>
+            <!-- SEE MORE -->
+            @if($materials->count() >= 6)
+                <div class="flex justify-center mt-16">
+                    <a href="{{ route('materials.index') }}" class="px-10 py-3 rounded-full bg-blue-600 text-white text-sm hover:bg-blue-700 transition">
+                        See More...
+                    </a>
+                </div>
+            @endif
 
 
         </div>
