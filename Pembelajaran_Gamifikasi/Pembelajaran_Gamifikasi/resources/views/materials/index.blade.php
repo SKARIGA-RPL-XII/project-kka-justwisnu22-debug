@@ -23,7 +23,7 @@
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                         <div class="p-6">
                             <h3 class="text-xl font-bitter font-bold text-gray-900 mb-3">{{ $material->title }}</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4">{{ $material->description }}</p>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">{{ $material->description }}</p>
                             <a href="{{ route('materials.show', $material->id) }}" 
                                class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200">
                                 Lihat Detail
@@ -38,5 +38,60 @@
             </div>
         </div>
     </div>
+    <div
+        class="relative bottom-[-50px] h-[50px] scale-y-[-1]"
+        style="background-image: url('/images/pemisah.png');">
+    </div>
+    <!-- Footer -->
+    <footer class="bg-[#0F172A] text-white pt-[80px] pb-8">
+        <div class="max-w-7xl mx-auto">
+
+            <!-- GRID FOOTER -->
+            <div class="grid grid-cols-12 gap-8">
+
+                <!-- COL 1 (4/12) -->
+                <div class="col-span-12 md:col-span-4">
+                    <img src="/images/aku_dev_logo-removebg-preview.png" alt="" class="w-[100px]">
+                    <h3 class="text-xl font-lumanosimo font-semibold mb-4">Dari Nol Jadi Developer Handal</h3>
+
+                </div>
+
+                <!-- COL 2 (2/12) -->
+                <div class="col-span-6 md:col-span-2">
+                    <h4 class="text-sm font-bitter font-semibold mb-4">Link</h4>
+                    <ul class="space-y-2 text-sm opacity-80">
+                        <li><a href="#" class="font-montserrat hover:opacity-100">Home</a></li>
+                        <li><a href="#" class="font-montserrat hover:opacity-100">Quest</a></li>
+                        <li><a href="#" class="font-montserrat hover:opacity-100">Belajar</a></li>
+                        <li><a href="#" class="font-montserrat hover:opacity-100">Badge</a></li>
+                        <li><a href="#" class="font-montserrat hover:opacity-100">About Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- COL 3 (2/12) -->
+                <div class="col-span-6 md:col-span-2">
+                    <h4 class="text-sm font-bitter font-semibold mb-4">Our Contact</h4>
+                    <ul class="space-y-2 text-sm opacity-80">
+                        <li><a href="#" class="font-montserrat hover:opacity-100">No. +62 858-5555-0057</a></li>
+                        <li><a href="#" class="font-montserrat hover:opacity-100">Email: akudev@gmail.com</a></li>
+                        <li><a href="#" class="font-montserrat hover:opacity-100">Instagram: AkuDev_</a></li>
+                    </ul>
+                </div>
+
+                <!-- COL 4 (4/12) -->
+                <div class="col-span-12 md:col-span-4">
+                    <h4 class="text-sm font-bitter font-semibold mb-4">Our Location</h4>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d246.9950363968931!2d112.58121981308561!3d-7.903365759255451!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1769363353465!5m2!1sid!2sid" width="300" height="150" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+
+            </div>
+
+            <!-- DIVIDER -->
+            <div class="border-t border-white/10 mt-12 pt-6 text-center text-sm opacity-70">
+                © 2026 Aku Dev. All rights reserved.
+            </div>
+
+        </div>
+    </footer>
 </body>
 </html>
