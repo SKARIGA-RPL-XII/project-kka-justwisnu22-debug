@@ -19,6 +19,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard')->with('success', 'Login berhasil!');
+            }
+            
             return redirect()->route('dashboard')->with('success', 'Login berhasil!');
         }
 
@@ -57,6 +62,10 @@ class AuthController extends Controller
 
     public function dashboard()
     {
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        
         return view('dashboard');
     }
 }

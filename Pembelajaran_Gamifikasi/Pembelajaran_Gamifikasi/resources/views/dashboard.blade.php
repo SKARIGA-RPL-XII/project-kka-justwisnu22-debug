@@ -52,7 +52,7 @@
 
                     <!-- INFO USER -->
                     <div class="flex-1 text-white">
-                        <h2 class="text-3xl font-bitter mb-1">Profile</h2>
+                        <h2 class="text-3xl font-bitter mb-1">{{ Auth::user()->username }}</h2>
                         <p class="text-sm opacity-80 mb-3">Lv 1</p>
 
 

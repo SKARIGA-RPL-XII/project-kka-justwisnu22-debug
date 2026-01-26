@@ -1,5 +1,5 @@
 <section class="bg-[#0F172A] w-full rounded-b-3xl z-10 relative">
-    <div class="mx-auto max-w-[1320px] px-6 py-4 flex justify-between items-center">
+    <div class="mx-auto max-w-[1320px]  py-4 flex justify-between items-center">
         <!-- LEFT: LOGO -->
         <div class="flex items-center gap-3">
             <img src="/images/aku_dev_logo-removebg-preview.png" alt="Aku Dev" class="w-[70px]">
@@ -20,8 +20,9 @@
             @auth
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" class="flex items-center gap-2 text-white px-3 py-2 rounded-lg hover:bg-white/10 transition">
-                    <img src="{{ Auth::user()->profile_photo_url ?? '/images/default_profile.png' }}" alt="Profile" class="w-8 h-8 rounded-full object-cover">
-                    <span class="font-montserrat">{{ Auth::user()->username }}</span>
+                    <img src="{{ Auth::user()->profile_photo_url 
+                     ?? '/images/dummy_user.png' }}" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                    <span class="font-lumanosimo">{{ Auth::user()->username }}</span>
                     <svg :class="{'rotate-180': open}" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>

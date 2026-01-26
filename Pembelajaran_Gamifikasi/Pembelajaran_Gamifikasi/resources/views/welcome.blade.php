@@ -33,8 +33,8 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="space-y-4">
-                    <input type="email" name="email" placeholder="Email" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="password" name="password" placeholder="Password" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="email" name="email" placeholder="Email" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="password" name="password" placeholder="Password" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Login</button>
                 </div>
             </form>
@@ -69,12 +69,15 @@
         function openLoginModal() {
             document.getElementById('loginModal').classList.remove('hidden');
         }
+
         function closeLoginModal() {
             document.getElementById('loginModal').classList.add('hidden');
         }
+
         function openRegisterModal() {
             document.getElementById('registerModal').classList.remove('hidden');
         }
+
         function closeRegisterModal() {
             document.getElementById('registerModal').classList.add('hidden');
         }
@@ -92,41 +95,10 @@
     </section>
     <div class="relative top-[-65px] w-full h-[45px] " style="background-image: url('/images/pemisah.png')"></div>
 
-    <!-- PROFILE CARD -->
-    <section class="relative z-30 -mt-40">
-        <div class="mx-auto max-w-[1320px]">
-            <div class="flex items-center gap-6 bg-[#0B3B8F] rounded-2xl p-8 shadow-xl">
 
-
-                <!-- FOTO PROFIL -->
-                <div class="w-[120px] h-[120px] rounded-full bg-white flex items-center justify-center overflow-hidden">
-                    <img src="/Images/dummy_user.png" alt="Profile"
-                        class="w-full h-full object-cover">
-                </div>
-
-
-                <!-- INFO USER -->
-                <div class="flex-1 text-white">
-                    <h2 class="text-3xl font-bitter mb-1">Profile</h2>
-                    <p class="text-sm opacity-80 mb-3">Lv 1</p>
-
-
-                    <!-- XP BAR -->
-                    <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden">
-                        <div class="h-full w-[50%] bg-gradient-to-r from-green-400 to-lime-400 rounded-full"></div>
-                    </div>
-
-
-                    <p class="text-sm mt-2 opacity-90">50 / 100 XP</p>
-                </div>
-
-
-            </div>
-        </div>
-    </section>
 
     <!-- Quest Section -->
-    <section class="my-[50px]">
+    <section class="mb-[50px]">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-bold font-bitter mb-6 text-black">Quest</h2>
 
