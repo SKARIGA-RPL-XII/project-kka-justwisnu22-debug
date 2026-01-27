@@ -3,12 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminQuizController;
+use App\Http\Controllers\UserQuizController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\WelcomeController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
-
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -18,17 +20,19 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware('auth
 Route::get('/materials', [MaterialController::class, 'index'])->name('materials.index');
 Route::get('/materials/{id}', [MaterialController::class, 'show'])->name('materials.show');
 
+// Quiz Routes for User
+Route::middleware('auth')->group(function () {
+    Route::get('/quiz', [UserQuizController::class, 'index'])->name('quiz.index');
+    Route::get('/quiz/{id}', [UserQuizController::class, 'show'])->name('quiz.show');
+    Route::post('/quiz/{id}/submit', [UserQuizController::class, 'submit'])->name('quiz.submit');
+});
+
 // Admin Routes 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     
     // Quiz Routes
-    Route::get('/quiz', [AdminController::class, 'quizIndex'])->name('quiz.index');
-    Route::get('/quiz/create', [AdminController::class, 'quizCreate'])->name('quiz.create');
-    Route::post('/quiz', [AdminController::class, 'quizStore'])->name('quiz.store');
-    Route::get('/quiz/{id}/edit', [AdminController::class, 'quizEdit'])->name('quiz.edit');
-    Route::put('/quiz/{id}', [AdminController::class, 'quizUpdate'])->name('quiz.update');
-    Route::delete('/quiz/{id}', [AdminController::class, 'quizDestroy'])->name('quiz.destroy');
+    Route::resource('quiz', AdminQuizController::class);
     
     // Materials Routes
     Route::get('/materials', [AdminController::class, 'materialsIndex'])->name('materials.index');

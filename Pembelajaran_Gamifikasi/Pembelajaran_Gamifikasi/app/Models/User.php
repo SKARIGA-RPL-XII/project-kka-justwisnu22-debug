@@ -21,7 +21,22 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'role',
+        'level',
+        'exp',
     ];
+
+    public function quizResults()
+    {
+        return $this->hasMany(UserQuizResult::class);
+    }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')
+                    ->withPivot('is_displayed', 'earned_at')
+                    ->withTimestamps();
+    }
 
     /**
      * The attributes that should be hidden for serialization.

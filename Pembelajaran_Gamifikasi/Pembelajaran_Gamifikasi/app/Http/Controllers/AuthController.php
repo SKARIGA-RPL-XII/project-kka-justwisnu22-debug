@@ -11,6 +11,11 @@ use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
 {
+    public function showLogin()
+    {
+        return redirect()->route('welcome');
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([

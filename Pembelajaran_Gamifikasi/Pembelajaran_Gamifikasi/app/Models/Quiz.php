@@ -12,8 +12,22 @@ class Quiz extends Model
     protected $fillable = [
         'title',
         'description',
-        'difficulty',
         'exp_reward',
         'category_id'
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(QuizCategory::class, 'category_id');
+    }
+
+    public function questions()
+    {
+        return $this->hasMany(QuizQuestion::class);
+    }
+
+    public function results()
+    {
+        return $this->hasMany(UserQuizResult::class);
+    }
 }

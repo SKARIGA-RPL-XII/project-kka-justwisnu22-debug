@@ -44,18 +44,27 @@
                 <table class="min-w-full">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Difficulty</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reward EXP</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($quizzes ?? [] as $quiz)
+                        @forelse($quizzes as $quiz)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $quiz->id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $quiz->title }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $quiz->difficulty }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">{{ $quiz->title }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                    @if($quiz->category->name == 'easy') bg-green-100 text-green-800
+                                    @elseif($quiz->category->name == 'medium') bg-yellow-100 text-yellow-800
+                                    @else bg-red-100 text-red-800 @endif">
+                                    {{ ucfirst($quiz->category->name) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-blue-600 font-semibold">{{ $quiz->exp_reward }} EXP</span>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a href="{{ route('admin.quiz.edit', $quiz->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                 <form method="POST" action="{{ route('admin.quiz.destroy', $quiz->id) }}" class="inline">

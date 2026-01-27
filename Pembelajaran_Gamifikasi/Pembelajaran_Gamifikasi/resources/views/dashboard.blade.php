@@ -53,16 +53,22 @@
                     <!-- INFO USER -->
                     <div class="flex-1 text-white">
                         <h2 class="text-3xl font-bitter mb-1">{{ Auth::user()->username }}</h2>
-                        <p class="text-sm opacity-80 mb-3">Lv 1</p>
+                        <p class="text-sm opacity-80 mb-3">Lv {{ Auth::user()->level }}</p>
 
+                        @php
+                            $currentLevelExp = (Auth::user()->level - 1) * 100;
+                            $nextLevelExp = Auth::user()->level * 100;
+                            $expInCurrentLevel = Auth::user()->exp - $currentLevelExp;
+                            $expProgress = min(100, ($expInCurrentLevel / 100) * 100);
+                        @endphp
 
                         <!-- XP BAR -->
                         <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden">
-                            <div class="h-full w-[50%] bg-gradient-to-r from-green-400 to-lime-400 rounded-full"></div>
+                            <div class="h-full bg-gradient-to-r from-green-400 to-lime-400 rounded-full transition-all duration-500" 
+                                 style="width: {{ $expProgress }}%"></div>
                         </div>
 
-
-                        <p class="text-sm mt-2 opacity-90">50 / 100 XP</p>
+                        <p class="text-sm mt-2 opacity-90">{{ $expInCurrentLevel }} / 100 XP</p>
                     </div>
 
 
