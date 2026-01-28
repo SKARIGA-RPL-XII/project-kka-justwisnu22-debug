@@ -40,22 +40,28 @@
                 <a href="{{ route('admin.badges.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tambah Badge</a>
             </div>
 
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <table class="min-w-full">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title Badge</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Syarat Level</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hadiah Title</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($badges ?? [] as $badge)
+                        @forelse($badges as $badge)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $badge->id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $badge->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $badge->description }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">{{ $badge->title }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">Level {{ $badge->level_requirement }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-blue-600">{{ $badge->reward_title }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a href="{{ route('admin.badges.edit', $badge->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                 <form method="POST" action="{{ route('admin.badges.destroy', $badge->id) }}" class="inline">

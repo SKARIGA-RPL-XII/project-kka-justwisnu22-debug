@@ -13,7 +13,8 @@ class UserQuizController extends Controller
     public function index()
     {
         $quizzes = Quiz::with('category')->get();
-        return view('quiz.index', compact('quizzes'));
+        $categories = \App\Models\QuizCategory::all();
+        return view('quiz.index', compact('quizzes', 'categories'));
     }
 
     public function show($id)

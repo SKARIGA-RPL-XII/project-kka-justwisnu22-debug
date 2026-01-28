@@ -24,6 +24,8 @@ class User extends Authenticatable
         'role',
         'level',
         'exp',
+        'photo_profile',
+        'title',
     ];
 
     public function quizResults()

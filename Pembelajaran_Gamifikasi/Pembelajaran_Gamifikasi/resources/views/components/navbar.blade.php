@@ -13,7 +13,7 @@
                 <a href="{{ Auth::check() ? route('dashboard') : route('welcome') }}" class="text-white font-lumanosimo hover:text-gray-300">Home</a>
                 <a href="{{ route('quiz.index') }}" class="text-white font-lumanosimo hover:text-gray-300">Quiz</a>
                 <a href="{{ route('materials.index') }}" class="text-white font-lumanosimo hover:text-gray-300">Belajar</a>
-                <a href="#" class="text-white font-lumanosimo hover:text-gray-300">Badge</a>
+                <a href="{{ route('badges.index') }}" class="text-white font-lumanosimo hover:text-gray-300">Badge</a>
             </nav>
 
             <!-- AUTH -->
@@ -30,7 +30,7 @@
 
                 <!-- DROPDOWN -->
                 <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-2 z-50">
-                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Edit Profile</a>
+                    <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Lihat Profil</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</button>

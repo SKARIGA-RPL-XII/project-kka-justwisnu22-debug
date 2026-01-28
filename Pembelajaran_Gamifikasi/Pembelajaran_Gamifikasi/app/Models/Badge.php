@@ -10,9 +10,15 @@ class Badge extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'description',
-        'icon',
-        'requirement'
+        'title',
+        'level_requirement',
+        'reward_title'
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_badges')
+                    ->withPivot('is_displayed', 'earned_at')
+                    ->withTimestamps();
+    }
 }

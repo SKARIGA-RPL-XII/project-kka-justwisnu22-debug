@@ -11,10 +11,8 @@ return new class extends Migration
         Schema::create('badges', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
-            $table->integer('exp_reward');
-            $table->enum('condition_type', ['exp', 'quiz', 'materi']);
-            $table->integer('condition_value');
+            $table->integer('level_requirement');
+            $table->string('reward_title');
             $table->timestamps();
         });
     }

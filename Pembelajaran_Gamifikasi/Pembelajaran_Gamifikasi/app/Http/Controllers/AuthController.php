@@ -73,6 +73,9 @@ class AuthController extends Controller
         }
         
         $materials = Material::take(6)->get();
-        return view('dashboard', compact('materials'));
+        $quizzes = \App\Models\Quiz::with('category')->take(6)->get();
+        $categories = \App\Models\QuizCategory::all();
+        
+        return view('dashboard', compact('materials', 'quizzes', 'categories'));
     }
 }
