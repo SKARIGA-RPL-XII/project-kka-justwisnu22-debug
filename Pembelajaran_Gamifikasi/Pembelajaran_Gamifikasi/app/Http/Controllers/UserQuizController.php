@@ -22,15 +22,22 @@ class UserQuizController extends Controller
         $quiz = Quiz::with(['questions.answers', 'category'])->findOrFail($id);
         
         // Check if user already completed this quiz
-        $completed = UserQuizResult::where('user_id', Auth::id())
-                                  ->where('quiz_id', $id)
-                                  ->exists();
+        $result = UserQuizResult::where('user_id', Auth::id())
+                                ->where('quiz_id', $id)
+                                ->first();
         
-        if ($completed) {
-            return redirect()->route('quiz.index')->with('info', 'Anda sudah menyelesaikan quiz ini!');
+        if ($result && $result->score > 0) {
+            return redirect()->route('quiz.index')->with('info', 'Anda sudah menyelesaikan quiz ini dengan benar!');
         }
         
-        return view('quiz.show', compact('quiz'));
+        // Shuffle answers for each question with random seed
+        $quiz->questions->each(function ($question) {
+            $shuffled = $question->answers->shuffle();
+            // Add random letter assignment
+            $question->shuffled_answers = $shuffled->values();
+        });
+        
+        return view('quiz.show', compact('quiz', 'result'));
     }
 
     public function submit(Request $request, $id)
@@ -50,7 +57,12 @@ class UserQuizController extends Controller
         $isCorrect = $selectedAnswer->is_correct;
         $earnedExp = $isCorrect ? $quiz->exp_reward : 0;
         
-        // Save result
+        // Delete previous result if exists (for retake)
+        UserQuizResult::where('user_id', Auth::id())
+                      ->where('quiz_id', $quiz->id)
+                      ->delete();
+        
+        // Save new result
         UserQuizResult::create([
             'user_id' => Auth::id(),
             'quiz_id' => $quiz->id,
@@ -67,7 +79,6 @@ class UserQuizController extends Controller
 
         return response()->json([
             'correct' => $isCorrect,
-            'correct_answer_id' => $question->answers->where('is_correct', true)->first()->id,
             'earned_exp' => $earnedExp,
             'exp_result' => $expResult
         ]);

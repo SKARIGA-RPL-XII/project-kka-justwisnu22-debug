@@ -30,11 +30,12 @@
                     </svg>
                 </button>
             </div>
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
                 <div class="space-y-4">
-                    <input type="email" name="email" placeholder="Email" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="Email" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <input type="password" name="password" placeholder="Password" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div id="loginError" class="text-red-600 text-sm hidden"></div>
                     <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Login</button>
                 </div>
             </form>
@@ -81,6 +82,15 @@
         function closeRegisterModal() {
             document.getElementById('registerModal').classList.add('hidden');
         }
+
+        // Show login errors if any
+        @if($errors->has('email'))
+            document.addEventListener('DOMContentLoaded', function() {
+                openLoginModal();
+                document.getElementById('loginError').textContent = '{{ $errors->first('email') }}';
+                document.getElementById('loginError').classList.remove('hidden');
+            });
+        @endif
     </script>
 
     <!-- Banner -->

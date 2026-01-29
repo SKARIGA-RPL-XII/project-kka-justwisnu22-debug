@@ -20,8 +20,11 @@
             @auth
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" class="flex items-center gap-2 text-white px-3 py-2 rounded-lg hover:bg-white/10 transition">
-                    <img src="{{ Auth::user()->profile_photo_url 
-                     ?? '/images/dummy_user.png' }}" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                    @if(Auth::user()->photo_profile)
+                        <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                    @else
+                        <img src="{{ asset('Images/dummy_user.png') }}" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                    @endif
                     <span class="font-lumanosimo">{{ Auth::user()->username }}</span>
                     <svg :class="{'rotate-180': open}" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />

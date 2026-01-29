@@ -37,9 +37,20 @@
         </aside>
 
         <main class="flex-1 p-6">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold">Edit Materi</h2>
-                <a href="{{ route('admin.materials.index') }}" class="text-blue-600 hover:text-blue-800">← Kembali ke Daftar Materi</a>
+            <div class="mb-6 flex items-center justify-between">
+                <!-- KIRI -->
+                <div>
+                    <h2 class="text-2xl font-bold">Edit Materi</h2>
+                    <a href="{{ route('admin.materials.index') }}" class="text-blue-600 hover:text-blue-800">
+                        ← Kembali ke Daftar Materi
+                    </a>
+                </div>
+
+                <!-- KANAN -->
+                <button type="submit"
+                    class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
+                    Update Materi
+                </button>
             </div>
 
             <div class="bg-white rounded-lg shadow p-6">
@@ -82,11 +93,7 @@
                             @enderror
                         </div>
 
-                        <div class="flex justify-end">
-                            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
-                                Update Materi
-                            </button>
-                        </div>
+                        
                     </div>
                 </form>
             </div>

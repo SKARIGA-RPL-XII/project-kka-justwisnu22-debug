@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -18,8 +18,9 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $userBadges = $user->badges;
-        return view('profile.edit', compact('user', 'userBadges'));
+        // Get badges that user has earned based on level
+        $earnedBadges = Badge::where('level_requirement', '<=', $user->level)->get();
+        return view('profile.edit', compact('user', 'earnedBadges'));
     }
 
     public function update(Request $request)
@@ -34,8 +35,8 @@ class ProfileController extends Controller
         $user = Auth::user();
         
         if ($request->hasFile('photo_profile')) {
-            if ($user->photo_profile) {
-                Storage::delete('public/' . $user->photo_profile);
+            if ($user->photo_profile && file_exists(storage_path('app/public/' . $user->photo_profile))) {
+                unlink(storage_path('app/public/' . $user->photo_profile));
             }
             $path = $request->file('photo_profile')->store('profiles', 'public');
             $user->photo_profile = $path;

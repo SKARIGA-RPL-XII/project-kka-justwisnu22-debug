@@ -40,19 +40,25 @@
         <!-- PROFILE CARD -->
         <section class="relative z-30 -mt-40">
             <div class="mx-auto max-w-[1320px]">
-                <div class="flex items-center gap-6 bg-[#0B3B8F] rounded-2xl p-8 shadow-xl">
+                <div class="flex items-center gap-6 bg-[linear-gradient(90deg,#093595_32%,#03112F_100%)] rounded-2xl p-8 shadow-xl">
 
 
                     <!-- FOTO PROFIL -->
                     <div class="w-[120px] h-[120px] rounded-full bg-white flex items-center justify-center overflow-hidden">
-                        <img src="/Images/dummy_user.png" alt="Profile"
-                            class="w-full h-full object-cover">
+                        @if(Auth::user()->photo_profile)
+                            <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}" alt="Profile" class="w-full h-full object-cover">
+                        @else
+                            <img src="{{ asset('Images/dummy_user.png') }}" alt="Profile" class="w-full h-full object-cover">
+                        @endif
                     </div>
 
 
                     <!-- INFO USER -->
                     <div class="flex-1 text-white">
                         <h2 class="text-3xl font-bitter mb-1">{{ Auth::user()->username }}</h2>
+                        @if(Auth::user()->title)
+                            <p class="text-sm opacity-80 mb-1">{{ Auth::user()->title }}</p>
+                        @endif
                         <p class="text-sm opacity-80 mb-3">Lv {{ Auth::user()->level }}</p>
 
                         @php

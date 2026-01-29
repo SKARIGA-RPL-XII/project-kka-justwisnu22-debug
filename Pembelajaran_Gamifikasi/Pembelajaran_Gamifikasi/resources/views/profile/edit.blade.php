@@ -75,13 +75,13 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                         <select name="title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Pilih Title (Opsional)</option>
-                            @foreach($userBadges as $badge)
+                            @foreach($earnedBadges as $badge)
                                 <option value="{{ $badge->reward_title }}" {{ old('title', $user->title) == $badge->reward_title ? 'selected' : '' }}>
                                     {{ $badge->reward_title }}
                                 </option>
                             @endforeach
                         </select>
-                        <p class="text-sm text-gray-500 mt-1">Hanya title dari badge yang sudah Anda dapatkan</p>
+                        <p class="text-sm text-gray-500 mt-1">Hanya title dari badge yang sudah Anda dapatkan (Level {{ $user->level }})</p>
                     </div>
 
                     <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">

@@ -31,6 +31,13 @@
 
             <!-- Quiz Content -->
             <div class="bg-white shadow-md p-8" id="quiz-container">
+                @if(isset($result) && $result->score == 0)
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
+                        <p class="font-semibold">Quiz Ulang</p>
+                        <p class="text-sm">Anda pernah menjawab quiz ini dengan salah. Silakan coba lagi!</p>
+                    </div>
+                @endif
+                
                 @php $question = $quiz->questions->first(); @endphp
                 
                 <!-- Question -->
@@ -44,7 +51,7 @@
                 <!-- Answers -->
                 <div class="space-y-3">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Pilihan Jawaban:</h3>
-                    @foreach($question->answers as $index => $answer)
+                    @foreach($question->shuffled_answers as $index => $answer)
                         <div class="answer-option p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 transition-colors"
                              data-answer-id="{{ $answer->id }}" data-is-correct="{{ $answer->is_correct ? 'true' : 'false' }}">
                             <div class="flex items-center space-x-3">
@@ -109,7 +116,7 @@
                         const optAnswerId = opt.dataset.answerId;
                         const optIsCorrect = opt.dataset.isCorrect === 'true';
                         
-                        if (optAnswerId == data.correct_answer_id) {
+                        if (optIsCorrect) {
                             // Correct answer - green
                             opt.classList.remove('border-gray-200', 'hover:border-blue-300');
                             opt.classList.add('border-green-500', 'bg-green-50');
