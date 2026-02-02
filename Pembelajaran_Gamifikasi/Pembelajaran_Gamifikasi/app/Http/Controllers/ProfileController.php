@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Badge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
@@ -33,24 +34,42 @@ class ProfileController extends Controller
         ]);
 
         $user = Auth::user();
-        
+
+        /**
+         * UPDATE PHOTO PROFILE (LONGBLOB)
+         */
         if ($request->hasFile('photo_profile')) {
-            if ($user->photo_profile && file_exists(storage_path('app/public/' . $user->photo_profile))) {
-                unlink(storage_path('app/public/' . $user->photo_profile));
-            }
-            $path = $request->file('photo_profile')->store('profiles', 'public');
-            $user->photo_profile = $path;
+            $user->photo_profile = file_get_contents(
+                $request->file('photo_profile')->getRealPath()
+            );
         }
 
         $user->username = $request->username;
         $user->title = $request->title;
-        
-        if ($request->password) {
+
+        /**
+         * UPDATE PASSWORD (OPTIONAL)
+         */
+        if (!empty($request->password)) {
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
 
-        return redirect()->route('profile.show')->with('success', 'Profile berhasil diupdate!');
+        return redirect()
+            ->route('profile.show')
+            ->with('success', 'Profile berhasil diupdate!');
     }
+
+    public function photo($id)
+{
+    $user = User::findOrFail($id);
+
+    if (!$user->photo_profile) {
+        abort(404);
+    }
+
+    return response($user->photo_profile)
+        ->header('Content-Type', 'image/jpeg');
+}
 }

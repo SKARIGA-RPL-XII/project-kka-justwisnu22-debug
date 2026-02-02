@@ -20,47 +20,145 @@
     @include('components.navbar')
 
     <!-- Login Modal -->
-    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bitter text-black font-bold">Login</h2>
-                <button onclick="closeLoginModal()" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            <form method="POST" action="{{ route('login') }}" id="loginForm">
+    <div id="loginModal" class="fixed inset-0 hidden z-50 flex items-center justify-center bg-[#03112F]/80 backdrop-blur-sm">
+        <div class="bg-white/95 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 relative">
+
+            <!-- Close -->
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
+                ✕
+            </button>
+
+            <!-- Title -->
+            <h2 class="text-3xl font-bold text-center text-[#03112F] mb-2">Welcome Back</h2>
+            <p class="text-center text-gray-500 text-sm mb-8">Masuk ke akun AKU DEV</p>
+
+            <form method="POST" action="{{ route('login') }}">
                 @csrf
+
                 <div class="space-y-4">
-                    <input type="email" name="email" value="{{ old('email') }}" placeholder="Email" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="password" name="password" placeholder="Password" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <div id="loginError" class="text-red-600 text-sm hidden"></div>
-                    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Login</button>
+                    <div class="[--clr:#1f1f1f] dark:[--clr:#999999] relative flex flex-row items-center">
+  <input
+    value=""
+    name="email"
+    required=""
+    aria-invalid="false"
+    placeholder=""
+    spellcheck="false"
+    autocomplete="off"
+    id="email"
+    type="email"
+    class="peer text-black pl-2 h-[40px] min-h-[40px] pr-[40px] leading-normal appearance-none resize-none box-border text-base w-full block text-left border border-solid bg-white rounded-[10px] m-0 p-0 outline-0 focus-visible:outline-0 focus-visible:border-[#1e40af] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#1e40af2e]"
+  />
+
+  <label
+    class="cursor-text text-[--clr] inline-block z-0 text-sm mb-px font-normal text-start select-none absolute duration-300 transform origin-[0] translate-x-[32px]
+           peer-focus-visible:text-[#1e40af]
+           peer-[:not(:placeholder-shown)]:text-[#1e40af]
+           peer-focus-visible:translate-x-[8px]
+           peer-[:not(:placeholder-shown)]:translate-x-[8px]
+           peer-focus-visible:translate-y-[-36px]
+           peer-[:not(:placeholder-shown)]:translate-y-[-36px]"
+    for="email"
+  >
+    Email
+  </label>
+
+  <span
+    class="pointer-events-none absolute z-[+1] left-0 top-0 bottom-0 flex items-center justify-center size-[40px] text-gray-500 peer-focus-visible:hidden peer-[:not(:placeholder-shown)]:hidden"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor">
+      <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+      <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+      <path d="M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28"></path>
+    </svg>
+  </span>
+
+  <div
+    class="group w-[40px] absolute top-0 bottom-0 right-0 flex items-center justify-center text-gray-500 peer-focus-visible:text-[#1e40af]"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor">
+      <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+      <path d="M12 8v4"></path>
+      <path d="M12 16h.01"></path>
+    </svg>
+
+    <span
+      class="text-sm absolute cursor-default select-none rounded-[4px] px-1.5 bg-[#1e40af] text-white opacity-0 right-0 -z-10 transition-all duration-300 group-hover:opacity-100 group-hover:-translate-y-[calc(100%+18px)]"
+    >
+      Required!
+    </span>
+  </div>
+</div>
+
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                        class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+
+                    <button
+                        type="submit"
+                        class="w-full py-3 rounded-lg text-white font-semibold bg-gradient-to-r from-[#093595] to-[#03112F] hover:opacity-90 transition">
+                        Login
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Register Modal -->
-    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bitter text-black font-bold">Daftar</h2>
-                <button onclick="closeRegisterModal()" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
+    <div id="registerModal" class="fixed inset-0 hidden z-50 flex items-center justify-center bg-[#03112F]/80 backdrop-blur-sm">
+        <div class="bg-white/95 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 relative">
+
+            <!-- Close -->
+            <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
+                ✕
+            </button>
+
+            <!-- Title -->
+            <h2 class="text-3xl font-bold text-center text-[#03112F] mb-2">Create Account</h2>
+            <p class="text-center text-gray-500 text-sm mb-8">Mulai perjalanan belajarmu 🚀</p>
+
             <form method="POST" action="{{ route('register') }}">
                 @csrf
+
                 <div class="space-y-4">
-                    <input type="text" name="username" placeholder="Username" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="email" name="email" placeholder="Email" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="password" name="password" placeholder="Password" required class="w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="password" name="password_confirmation" placeholder="Konfirmasi Password" required class="w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Daftar</button>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        required
+                        class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        required
+                        class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                        class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+
+                    <input
+                        type="password"
+                        name="password_confirmation"
+                        placeholder="Konfirmasi Password"
+                        required
+                        class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+
+                    <button
+                        type="submit"
+                        class="w-full py-3 rounded-lg text-white font-semibold bg-gradient-to-r from-[#093595] to-[#03112F] hover:opacity-90 transition">
+                        Daftar
+                    </button>
                 </div>
             </form>
         </div>
@@ -84,12 +182,13 @@
         }
 
         // Show login errors if any
-        @if($errors->has('email'))
-            document.addEventListener('DOMContentLoaded', function() {
-                openLoginModal();
-                document.getElementById('loginError').textContent = '{{ $errors->first('email') }}';
-                document.getElementById('loginError').classList.remove('hidden');
-            });
+        @if($errors -> has('email'))
+        document.addEventListener('DOMContentLoaded', function() {
+            openLoginModal();
+            document.getElementById('loginError').textContent = '{{ $errors->first('
+            email ') }}';
+            document.getElementById('loginError').classList.remove('hidden');
+        });
         @endif
     </script>
 
@@ -182,38 +281,38 @@ hover:-translate-y-2 hover:shadow-2xl">
             <!-- GRID -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 @forelse($materials as $material)
-                    <div class="bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl transition hover:-translate-y-2 hover:shadow-2xl">
-                        <!-- TITLE -->
-                        <h3 class="font-bitter text-2xl mb-4">{{ $material->title }}</h3>
-                        
-                        <!-- DESKRIPSI -->
-                        <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">{{ $material->description }}</p>
-                        
-                        <!-- BUTTON -->
-                        @auth
-                            <a href="{{ route('materials.show', $material->id) }}" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm inline-block">
-                                Lihat Detail →
-                            </a>
-                        @else
-                            <button onclick="openLoginModal()" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm">
-                                Lihat Detail →
-                            </button>
-                        @endauth
-                    </div>
+                <div class="bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl transition hover:-translate-y-2 hover:shadow-2xl">
+                    <!-- TITLE -->
+                    <h3 class="font-bitter text-2xl mb-4">{{ $material->title }}</h3>
+
+                    <!-- DESKRIPSI -->
+                    <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">{{ $material->description }}</p>
+
+                    <!-- BUTTON -->
+                    @auth
+                    <a href="{{ route('materials.show', $material->id) }}" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm inline-block">
+                        Lihat Detail →
+                    </a>
+                    @else
+                    <button onclick="openLoginModal()" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm">
+                        Lihat Detail →
+                    </button>
+                    @endauth
+                </div>
                 @empty
-                    <div class="col-span-full text-center py-8">
-                        <p class="text-gray-500">Belum ada materi tersedia</p>
-                    </div>
+                <div class="col-span-full text-center py-8">
+                    <p class="text-gray-500">Belum ada materi tersedia</p>
+                </div>
                 @endforelse
             </div>
 
             <!-- SEE MORE -->
             @if($materials->count() >= 6)
-                <div class="flex justify-center mt-16">
-                    <a href="{{ route('materials.index') }}" class="px-10 py-3 rounded-full bg-blue-600 text-white text-sm hover:bg-blue-700 transition">
-                        See More...
-                    </a>
-                </div>
+            <div class="flex justify-center mt-16">
+                <a href="{{ route('materials.index') }}" class="px-10 py-3 rounded-full bg-blue-600 text-white text-sm hover:bg-blue-700 transition">
+                    See More...
+                </a>
+            </div>
             @endif
 
 

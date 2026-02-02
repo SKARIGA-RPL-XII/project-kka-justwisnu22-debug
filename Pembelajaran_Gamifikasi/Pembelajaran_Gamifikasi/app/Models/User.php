@@ -28,6 +28,8 @@ class User extends Authenticatable
         'title',
     ];
 
+    protected $appends = ['photo_profile_url'];
+
     public function quizResults()
     {
         return $this->hasMany(UserQuizResult::class);
@@ -38,6 +40,15 @@ class User extends Authenticatable
         return $this->belongsToMany(Badge::class, 'user_badges')
                     ->withPivot('is_displayed', 'earned_at')
                     ->withTimestamps();
+    }
+
+    public function getPhotoProfileUrlAttribute()
+    {
+        if ($this->photo_profile) {
+            return 'data:image/*;base64,' . base64_encode($this->photo_profile);
+        }
+
+        return asset('Images/dummy_user.png');
     }
 
     /**

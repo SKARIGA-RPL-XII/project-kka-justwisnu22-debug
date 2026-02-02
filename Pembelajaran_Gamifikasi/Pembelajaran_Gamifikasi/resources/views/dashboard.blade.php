@@ -10,7 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-gray-100">
+<div class="font-sans antialiased bg-gray-100">
     @include('components.navbar')
 
     <div class="py-0">
@@ -24,114 +24,157 @@
             }, 3000);
         </script>
         @endif
+        <div class="bg-gradient-to-b from-[#F4F7FF] via-white to-[#F4F7FF]"></div>
+    </div>
 
-        <!-- Banner -->
-        <section class="banner">
-            <div
-                class="relative top-[-20px] z-0 h-[500px] bg-cover bg-center bg-no-repeat"
-                style="background-image: url('/images/baner.jpg');">
-                <!-- OVERLAY -->
-                <div class="absolute inset-0 bg-[#1552D8]/40"></div>
-            </div>
+    <!-- Banner -->
+    <section class="banner">
+        <div
+            class="relative top-[-20px] z-0 h-[500px] bg-cover bg-center bg-no-repeat"
+            style="background-image: url('/images/baner.jpg');">
+            <!-- OVERLAY -->
+            <div class="absolute inset-0 bg-[#1552D8]/40"></div>
+        </div>
 
-        </section>
-        <div class="relative top-[-65px] w-full h-[45px] " style="background-image: url('/images/pemisah.png')"></div>
+    </section>
+    <div class="relative top-[-65px] w-full h-[45px] " style="background-image: url('/images/pemisah.png')"></div>
 
-        <!-- PROFILE CARD -->
-        <section class="relative z-30 -mt-40">
-            <div class="mx-auto max-w-[1320px]">
-                <div class="flex items-center gap-6 bg-[linear-gradient(90deg,#093595_32%,#03112F_100%)] rounded-2xl p-8 shadow-xl">
+    <!-- PROFILE CARD -->
+    <section class="relative z-30 -mt-40">
+        <div class="mx-auto max-w-[1320px]">
+            <div class="flex items-center gap-6 bg-[linear-gradient(90deg,#093595_32%,#03112F_100%)] rounded-2xl p-8 shadow-xl">
 
 
-                    <!-- FOTO PROFIL -->
-                    <div class="w-[120px] h-[120px] rounded-full bg-white flex items-center justify-center overflow-hidden">
-                        @if(Auth::user()->photo_profile)
-                            <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}" alt="Profile" class="w-full h-full object-cover">
-                        @else
-                            <img src="{{ asset('Images/dummy_user.png') }}" alt="Profile" class="w-full h-full object-cover">
-                        @endif
+                <!-- Foto Profil -->
+                <div class="w-24 h-24 rounded-full bg-white overflow-hidden ring-4 ring-blue-500/20">
+                    @if(Auth::user()->photo_profile)
+                    <img
+                        src="{{ route('profile.photo', Auth::id()) }}"
+                        alt="Profile"
+                        class="w-full h-full object-cover">
+                    @else
+                    <img
+                        src="{{ asset('Images/dummy_user.png') }}"
+                        alt="Profile"
+                        class="w-full h-full object-cover">
+                    @endif
+                </div>
+
+
+
+                <!-- INFO USER -->
+                <div class="flex-1 text-white">
+                    <h2 class="text-3xl font-bitter mb-1">{{ Auth::user()->username }}</h2>
+                    @if(Auth::user()->title)
+                    <p class="text-sm opacity-80 mb-1">{{ Auth::user()->title }}</p>
+                    @endif
+                    <p class="text-sm opacity-80 mb-3">Lv {{ Auth::user()->level }}</p>
+
+                    @php
+                    $currentLevelExp = (Auth::user()->level - 1) * 100;
+                    $nextLevelExp = Auth::user()->level * 100;
+                    $expInCurrentLevel = Auth::user()->exp - $currentLevelExp;
+                    $expProgress = min(100, ($expInCurrentLevel / 100) * 100);
+                    @endphp
+
+                    <!-- XP BAR -->
+                    <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-green-400 to-lime-400 rounded-full transition-all duration-500"
+                            style="width: {{ $expProgress }}%"></div>
                     </div>
 
-
-                    <!-- INFO USER -->
-                    <div class="flex-1 text-white">
-                        <h2 class="text-3xl font-bitter mb-1">{{ Auth::user()->username }}</h2>
-                        @if(Auth::user()->title)
-                            <p class="text-sm opacity-80 mb-1">{{ Auth::user()->title }}</p>
-                        @endif
-                        <p class="text-sm opacity-80 mb-3">Lv {{ Auth::user()->level }}</p>
-
-                        @php
-                            $currentLevelExp = (Auth::user()->level - 1) * 100;
-                            $nextLevelExp = Auth::user()->level * 100;
-                            $expInCurrentLevel = Auth::user()->exp - $currentLevelExp;
-                            $expProgress = min(100, ($expInCurrentLevel / 100) * 100);
-                        @endphp
-
-                        <!-- XP BAR -->
-                        <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-green-400 to-lime-400 rounded-full transition-all duration-500" 
-                                 style="width: {{ $expProgress }}%"></div>
-                        </div>
-
-                        <p class="text-sm mt-2 opacity-90">{{ $expInCurrentLevel }} / 100 XP</p>
-                    </div>
-
-
+                    <p class="text-sm mt-2 opacity-90">{{ $expInCurrentLevel }} / 100 XP</p>
                 </div>
+
+
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Quest Section -->
-        <section class="my-[50px]">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold font-bitter mb-6 text-black">Quiz</h2>
+    <!-- Quest Section -->
+    <section class="my-[50px]">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold font-bitter mb-6 text-black">Quiz</h2>
 
-                <div class="flex justify-center gap-4">
-                    <button onclick="filterQuiz('all')" class="px-6 py-2 rounded-full bg-blue-600 text-white text-sm category-btn active">All</button>
-                    @foreach($categories as $category)
-                        <button onclick="filterQuiz('{{ $category->name }}')" class="px-6 py-2 rounded-full bg-blue-100 text-blue-700 text-sm category-btn">{{ ucfirst($category->name) }}</button>
-                    @endforeach
-                </div>
+            <div class="flex justify-center gap-4">
+                <button onclick="filterQuiz('all')" class="px-6 py-2 rounded-full bg-blue-600 text-white text-sm category-btn active">All</button>
+                @foreach($categories as $category)
+                <button onclick="filterQuiz('{{ $category->name }}')" class="px-6 py-2 rounded-full bg-blue-100 text-blue-700 text-sm category-btn">{{ ucfirst($category->name) }}</button>
+                @endforeach
             </div>
+        </div>
 
-            <div class="mx-auto max-w-[1320px] pb-20">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" id="quiz-container">
-                    @foreach($quizzes as $quiz)
-                        <div class="bg-[#2259D0] rounded-2xl p-6 shadow-xl text-white transition hover:-translate-y-2 hover:shadow-2xl quiz-card" 
-                             data-category="{{ $quiz->category->name }}" onclick="window.location.href='{{ route('quiz.show', $quiz->id) }}'">
-                            <!-- TITLE + BADGE -->
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-bitter text-2xl">{{ $quiz->title }}</h3>
-                                <span class="bg-[#0F172A] text-xs px-4 py-1 rounded-full
+        <div class="mx-auto max-w-[1320px] pb-20">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" id="quiz-container">
+                @foreach($quizzes as $quiz)
+                <div
+                    class="group bg-[#2259D0] rounded-2xl p-6 shadow-xl text-white
+           transition hover:-translate-y-2 hover:shadow-2xl quiz-card cursor-pointer"
+                    data-category="{{ $quiz->category->name }}"
+                    onclick="window.location.href='{{ route('quiz.show', $quiz->id) }}'">
+                    <!-- TITLE + BADGE -->
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bitter text-2xl">{{ $quiz->title }}</h3>
+                        <span class="bg-[#0F172A] text-xs px-4 py-1 rounded-full
                                     @if($quiz->category->name == 'easy') bg-green-600
                                     @elseif($quiz->category->name == 'medium') bg-yellow-600
                                     @else bg-red-600 @endif">
-                                    {{ ucfirst($quiz->category->name) }}
-                                </span>
-                            </div>
+                            {{ ucfirst($quiz->category->name) }}
+                        </span>
+                    </div>
 
-                            <!-- FOOTER -->
-                            <div class="flex items-center justify-between">
-                                <button class="bg-[#093595] hover:bg-[#2f58af] transition px-6 py-2 rounded-full text-sm">
-                                    Mulai →
-                                </button>
-                                <span class="bg-white text-yellow-500 text-xs font-semibold px-4 py-2 rounded-full">
-                                    {{ $quiz->exp_reward }} XP
-                                </span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+                    <!-- FOOTER -->
+                    <div class="flex items-center justify-between">
 
-                <!-- SEE MORE -->
-                <div class="flex justify-center mt-14">
-                    <a href="{{ route('quiz.index') }}" class="px-10 py-3 rounded-full bg-[#2259D0] text-white text-sm transition hover:bg-[#3e6dd1]">
-                        See More...
-                    </a>
+                        <button
+                            class="w-[150px] h-[44px] my-3 flex items-center justify-center
+           rounded-xl relative overflow-hidden shadow-md
+           bg-black text-white
+           transition-all duration-500 ease-in-out
+
+           group-hover:scale-105
+           group-hover:shadow-lg">
+
+                            <span
+                                class="absolute inset-0 bg-gradient-to-r from-[#2f58af] to-[#093595]
+               -translate-x-full group-hover:translate-x-0
+               transition-transform duration-500 ease-in-out">
+                            </span>
+
+                            <span class="relative z-10">
+                                Mulai Quiz →
+                            </span>
+                        </button>
+                        <span class="bg-white text-yellow-500 text-xs font-semibold px-4 py-2 rounded-full">
+                            {{ $quiz->exp_reward }} XP
+                        </span>
+                    </div>
                 </div>
+                @endforeach
             </div>
-        </section>
+
+            <!-- SEE MORE -->
+            <div class="flex justify-center mt-14">
+                <a href="{{ route('quiz.index') }}">
+                    <button
+                        class="cursor-pointer bg-gradient-to-b from-blue-500 to-[#093595] shadow-[0px_4px_32px_0_rgba(99,102,241,.70)] px-6 py-3 rounded-xl   text-white font-medium group">
+                        <div class="relative overflow-hidden">
+                            <p
+                                class="group-hover:-translate-y-7 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">
+                                See More . . .
+                            </p>
+                            <p
+                                class="absolute top-7 left-0 group-hover:top-0 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">
+                                See More . . .
+                            </p>
+                        </div>
+                    </button>
+                </a>
+
+            </div>
+
+        </div>
+    </section>
 
     <!-- Materi Section -->
     <section class="mb-[50px]">
@@ -171,7 +214,6 @@
             @endif
         </div>
     </section>
-
 
 
     <div
@@ -229,30 +271,31 @@
 
         </div>
     </footer>
-    <script>
-        function filterQuiz(category) {
-            const cards = document.querySelectorAll('.quiz-card');
-            const buttons = document.querySelectorAll('.category-btn');
-            
-            // Update button styles
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-blue-600', 'text-white', 'active');
-                btn.classList.add('bg-blue-100', 'text-blue-700');
-            });
-            
-            event.target.classList.remove('bg-blue-100', 'text-blue-700');
-            event.target.classList.add('bg-blue-600', 'text-white', 'active');
-            
-            // Filter cards
-            cards.forEach(card => {
-                if (category === 'all' || card.dataset.category === category) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-    </script>
+</div>
+<script>
+    function filterQuiz(category) {
+        const cards = document.querySelectorAll('.quiz-card');
+        const buttons = document.querySelectorAll('.category-btn');
+
+        // Update button styles
+        buttons.forEach(btn => {
+            btn.classList.remove('bg-blue-600', 'text-white', 'active');
+            btn.classList.add('bg-blue-100', 'text-blue-700');
+        });
+
+        event.target.classList.remove('bg-blue-100', 'text-blue-700');
+        event.target.classList.add('bg-blue-600', 'text-white', 'active');
+
+        // Filter cards
+        cards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
 </body>
 
 </html>
