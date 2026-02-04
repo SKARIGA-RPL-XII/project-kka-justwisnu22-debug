@@ -22,10 +22,32 @@
 
         <!-- Filter Categories -->
         <div class="flex justify-center gap-4 mb-8">
-            <button onclick="filterQuiz('all')" class="px-6 py-2 rounded-full bg-blue-600 text-white text-sm category-btn active">All</button>
+            <div
+                class="category-btn max-w-32 bg-transparent items-center justify-center flex
+         rounded-3xl border-2 border-sky-500 shadow-lg
+         text-sky-500 cursor-pointer
+         transition-all duration-300
+         hover:bg-blue-500 hover:text-white
+         active:scale-[0.98]">
+                <button onclick="filterQuiz(event, 'all')" class="px-5 py-2">
+                    All
+                </button>
+            </div>
+
             @foreach($categories as $category)
-                <button onclick="filterQuiz('{{ $category->name }}')" class="px-6 py-2 rounded-full bg-blue-100 text-blue-700 text-sm category-btn">{{ ucfirst($category->name) }}</button>
+            <div
+                class="category-btn max-w-32 bg-transparent items-center justify-center flex
+         rounded-3xl border-2 border-sky-500 shadow-lg
+         text-sky-500 cursor-pointer
+         transition-all duration-300
+         hover:bg-blue-500 hover:text-white
+         active:scale-[0.98]">
+                <button onclick="filterQuiz(event, '{{ $category->name }}')" class="px-5 py-2">
+                    {{ ucfirst($category->name) }}
+                </button>
+            </div>
             @endforeach
+
         </div>
 
         @if(session('info'))
@@ -36,15 +58,22 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($quizzes as $quiz)
-            <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer quiz-card"
-                data-category="{{ $quiz->category->name }}" onclick="window.location.href='{{ route('quiz.show', $quiz->id) }}'">
+            <div
+                class="group bg-white rounded-lg shadow-md hover:shadow-xl
+               transition-all duration-300 cursor-pointer quiz-card
+               hover:-translate-y-1"
+                data-category="{{ $quiz->category->name }}"
+                onclick="window.location.href='{{ route('quiz.show', $quiz->id) }}'">
+
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800 line-clamp-2">{{ $quiz->title }}</h3>
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full ml-2 flex-shrink-0
-                                @if($quiz->category->name == 'easy') bg-green-100 text-green-800
-                                @elseif($quiz->category->name == 'medium') bg-yellow-100 text-yellow-800
-                                @else bg-red-100 text-red-800 @endif">
+                        <h3 class="text-xl font-semibold text-gray-800 line-clamp-2">
+                            {{ $quiz->title }}
+                        </h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full ml-2
+                    @if($quiz->category->name == 'easy') bg-green-100 text-green-800
+                    @elseif($quiz->category->name == 'medium') bg-yellow-100 text-yellow-800
+                    @else bg-red-100 text-red-800 @endif">
                             {{ ucfirst($quiz->category->name) }}
                         </span>
                     </div>
@@ -54,11 +83,30 @@
                             <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
-                            <span class="text-blue-600 font-semibold">{{ $quiz->exp_reward }} EXP</span>
+                            <span class="text-blue-600 font-semibold">
+                                {{ $quiz->exp_reward }} EXP
+                            </span>
                         </div>
 
-                        <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
-                            Mulai Quiz
+                        <!-- BUTTON SAMA PERSIS KAYAK DASHBOARD -->
+                        <button
+                            class="w-[150px] h-[44px] flex items-center justify-center
+                           rounded-xl relative overflow-hidden shadow-md
+                           bg-black text-white
+                           transition-all duration-500 ease-in-out
+                           group-hover:scale-105
+                           group-hover:shadow-lg">
+
+                            <span
+                                class="absolute inset-0 bg-gradient-to-r
+                               from-[#2f58af] to-[#093595]
+                               -translate-x-full group-hover:translate-x-0
+                               transition-transform duration-500 ease-in-out">
+                            </span>
+
+                            <span class="relative z-10">
+                                Mulai Quiz →
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -71,6 +119,7 @@
             </div>
             @endforelse
         </div>
+
     </div>
 
     <div
@@ -130,20 +179,38 @@
     </footer>
 
     <script>
-        function filterQuiz(category) {
+        function filterQuiz(event, category) {
             const cards = document.querySelectorAll('.quiz-card');
             const buttons = document.querySelectorAll('.category-btn');
-            
-            // Update button styles
+
+            // RESET semua button
             buttons.forEach(btn => {
-                btn.classList.remove('bg-blue-600', 'text-white', 'active');
-                btn.classList.add('bg-blue-100', 'text-blue-700');
+                btn.classList.remove(
+                    'bg-blue-500',
+                    'text-white',
+                    'border-blue-500'
+                );
+                btn.classList.add(
+                    'bg-transparent',
+                    'text-sky-500',
+                    'border-sky-500'
+                );
             });
-            
-            event.target.classList.remove('bg-blue-100', 'text-blue-700');
-            event.target.classList.add('bg-blue-600', 'text-white', 'active');
-            
-            // Filter cards
+
+            // AKTIFKAN button yang diklik
+            const activeBtn = event.currentTarget.closest('.category-btn');
+            activeBtn.classList.remove(
+                'bg-transparent',
+                'text-sky-500',
+                'border-sky-500'
+            );
+            activeBtn.classList.add(
+                'bg-blue-500',
+                'text-white',
+                'border-blue-500'
+            );
+
+            // FILTER quiz
             cards.forEach(card => {
                 if (category === 'all' || card.dataset.category === category) {
                     card.style.display = 'block';
@@ -153,6 +220,7 @@
             });
         }
     </script>
+
 </body>
 
 </html>

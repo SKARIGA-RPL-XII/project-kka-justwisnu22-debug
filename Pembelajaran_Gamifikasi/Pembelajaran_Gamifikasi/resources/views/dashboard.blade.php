@@ -184,31 +184,69 @@
 
             <!-- GRID -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                @forelse($materials as $material)
-                <div class="bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl transition hover:-translate-y-2 hover:shadow-2xl">
-                    <!-- TITLE -->
-                    <h3 class="font-bitter text-2xl mb-4">{{ $material->title }}</h3>
+    @forelse($materials as $material)
+    <div
+        class="group bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl
+               transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
+               cursor-pointer"
+        onclick="window.location.href='{{ route('materials.show', $material->id) }}'">
 
-                    <!-- DESKRIPSI -->
-                    <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">{{ $material->description }}</p>
+        <!-- TITLE -->
+        <h3 class="font-bitter text-2xl mb-4">
+            {{ $material->title }}
+        </h3>
 
-                    <!-- BUTTON -->
-                    <a href="{{ route('materials.show', $material->id) }}" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm inline-block">
-                        Lihat Detail →
-                    </a>
-                </div>
-                @empty
-                <div class="col-span-full text-center py-8">
-                    <p class="text-gray-500">Belum ada materi tersedia</p>
-                </div>
-                @endforelse
-            </div>
+        <!-- DESKRIPSI -->
+        <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">
+            {{ $material->description }}
+        </p>
+
+        <!-- BUTTON (IKUT HOVER CARD) -->
+        <button
+            class="w-[160px] h-[44px] flex items-center justify-center
+                   rounded-xl relative overflow-hidden shadow-md
+                   bg-black text-white
+                   transition-all duration-500 ease-in-out
+                   group-hover:scale-105
+                   group-hover:shadow-lg">
+
+            <span
+                class="absolute inset-0 bg-gradient-to-r
+                       from-[#2f58af] to-[#093595]
+                       -translate-x-full group-hover:translate-x-0
+                       transition-transform duration-500 ease-in-out">
+            </span>
+
+            <span class="relative z-10">
+                Lihat Detail →
+            </span>
+        </button>
+    </div>
+    @empty
+    <div class="col-span-full text-center py-8">
+        <p class="text-gray-500">Belum ada materi tersedia</p>
+    </div>
+    @endforelse
+</div>
+
 
             <!-- SEE MORE -->
             @if($materials->count() >= 6)
             <div class="flex justify-center mt-16">
-                <a href="{{ route('materials.index') }}" class="px-10 py-3 rounded-full bg-blue-600 text-white text-sm hover:bg-blue-700 transition">
-                    See More...
+                <a href="{{ route('materials.index') }}">
+                    <button
+                        class="cursor-pointer bg-gradient-to-b from-blue-500 to-[#093595] shadow-[0px_4px_32px_0_rgba(99,102,241,.70)] px-6 py-3 rounded-xl   text-white font-medium group">
+                        <div class="relative overflow-hidden">
+                            <p
+                                class="group-hover:-translate-y-7 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">
+                                See More . . .
+                            </p>
+                            <p
+                                class="absolute top-7 left-0 group-hover:top-0 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">
+                                See More . . .
+                            </p>
+                        </div>
+                    </button>
                 </a>
             </div>
             @endif
@@ -250,7 +288,7 @@
                 <div class="col-span-6 md:col-span-2">
                     <h4 class="text-sm font-bitter font-semibold mb-4">Our Contact</h4>
                     <ul class="space-y-2 text-sm opacity-80">
-                        <li><a href="#" class="font-montserrat hover:opacity-100">No. +62 858-5555-0057</a></li>
+                        <li><a href="https://wa.me/6285855550057/" target="_blank" class=" font-montserrat hover:opacity-100">No. +62 858-5555-0057</a></li>
                         <li><a href="#" class="font-montserrat hover:opacity-100">Email: akudev@gmail.com</a></li>
                         <li><a href="#" class="font-montserrat hover:opacity-100">Instagram: AkuDev_</a></li>
                     </ul>

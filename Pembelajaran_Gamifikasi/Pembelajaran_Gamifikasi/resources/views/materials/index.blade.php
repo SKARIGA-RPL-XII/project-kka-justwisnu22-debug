@@ -19,23 +19,59 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @forelse($materials as $material)
-                    <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                        <div class="p-6">
-                            <h3 class="text-xl font-bitter font-bold text-gray-900 mb-3">{{ $material->title }}</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">{{ $material->description }}</p>
-                            <a href="{{ route('materials.show', $material->id) }}" 
-                               class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200">
-                                Lihat Detail
-                            </a>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-full text-center py-12">
-                        <p class="text-gray-500 text-lg">Belum ada materi tersedia</p>
-                    </div>
-                @endforelse
+    @forelse($materials as $material)
+        <div
+            class="group bg-white rounded-2xl shadow-lg overflow-hidden
+                   transition-all duration-300
+                   hover:-translate-y-2 hover:shadow-xl">
+
+            <div class="p-6 flex flex-col h-full">
+                <!-- TITLE -->
+                <h3 class="text-xl font-bitter font-bold text-gray-900 mb-3">
+                    {{ $material->title }}
+                </h3>
+
+                <!-- DESKRIPSI -->
+                <p class="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3 flex-1">
+                    {{ $material->description }}
+                </p>
+
+                <!-- BUTTON -->
+                <a href="{{ route('materials.show', $material->id) }}">
+                    <button
+                        class="w-[150px] h-[44px]
+                               flex items-center justify-center
+                               rounded-xl relative overflow-hidden
+                               bg-black text-white
+                               shadow-md
+                               transition-all duration-500 ease-in-out
+
+                               group-hover:scale-105
+                               group-hover:shadow-lg">
+
+                        <!-- gradient hover layer -->
+                        <span
+                            class="absolute inset-0
+                                   bg-gradient-to-r from-[#2f58af] to-[#093595]
+                                   -translate-x-full
+                                   group-hover:translate-x-0
+                                   transition-transform duration-500 ease-in-out">
+                        </span>
+
+                        <span class="relative z-10">
+                            Lihat Detail →
+                        </span>
+                    </button>
+                </a>
             </div>
+        </div>
+    @empty
+        <div class="col-span-full text-center py-12">
+            <p class="text-gray-500 text-lg">Belum ada materi tersedia</p>
+        </div>
+    @endforelse
+</div>
+
         </div>
     </div>
     <div
