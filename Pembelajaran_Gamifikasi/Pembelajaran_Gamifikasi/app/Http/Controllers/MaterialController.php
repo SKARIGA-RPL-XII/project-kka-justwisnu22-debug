@@ -4,18 +4,97 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Material;
+use App\Models\Category;
+use App\Models\CategoryLevel;
+use App\Models\Quiz;
+use App\Models\UserProgress;
+use Illuminate\Support\Facades\Auth;
 
 class MaterialController extends Controller
 {
+    // Halaman Belajar - Tampilkan kategori
     public function index()
     {
-        $materials = Material::all();
-        return view('materials.index', compact('materials'));
+        $categories = Category::with('levels')->get();
+        
+        // Hitung progress per kategori untuk user yang login
+        if (Auth::check()) {
+            foreach ($categories as $category) {
+                $totalLevels = $category->levels->count();
+                $completedLevels = UserProgress::where('user_id', Auth::id())
+                    ->where('category_id', $category->id)
+                    ->where('status', 'completed')
+                    ->count();
+                
+                $category->progress_percentage = $totalLevels > 0 ? round(($completedLevels / $totalLevels) * 100) : 0;
+            }
+        }
+        
+        return view('materials.index', compact('categories'));
     }
 
-    public function show($id)
+    // Tampilkan daftar langkah (levels) dalam kategori
+    public function showCategory($categoryId)
     {
-        $material = Material::findOrFail($id);
-        return view('materials.show', compact('material'));
+        $category = Category::with(['levels.difficulty'])->findOrFail($categoryId);
+        
+        // Get user progress untuk kategori ini
+        $userProgress = [];
+        if (Auth::check()) {
+            $progress = UserProgress::where('user_id', Auth::id())
+                ->where('category_id', $categoryId)
+                ->get()
+                ->keyBy('level_id');
+            
+            foreach ($category->levels as $index => $level) {
+                if (isset($progress[$level->id])) {
+                    $userProgress[$level->id] = $progress[$level->id]->status;
+                } else {
+                    // Level pertama selalu ongoing, sisanya locked
+                    $userProgress[$level->id] = $index === 0 ? 'ongoing' : 'locked';
+                    
+                    // Auto-create progress untuk level pertama
+                    if ($index === 0) {
+                        UserProgress::firstOrCreate([
+                            'user_id' => Auth::id(),
+                            'category_id' => $categoryId,
+                            'level_id' => $level->id
+                        ], [
+                            'status' => 'ongoing'
+                        ]);
+                    }
+                }
+            }
+        }
+        
+        return view('materials.category', compact('category', 'userProgress'));
+    }
+
+    // Tampilkan materi berdasarkan level
+    public function show($categoryId, $levelId)
+    {
+        $level = CategoryLevel::with(['category', 'difficulty'])->findOrFail($levelId);
+        $material = Material::where('category_id', $categoryId)
+            ->where('level_id', $levelId)
+            ->first();
+        
+        // Check if user has access to this level
+        if (Auth::check()) {
+            $progress = UserProgress::where('user_id', Auth::id())
+                ->where('level_id', $levelId)
+                ->first();
+            
+            if (!$progress || $progress->status === 'locked') {
+                return redirect()->route('materials.category', $categoryId)
+                    ->with('error', 'Level ini masih terkunci. Selesaikan level sebelumnya terlebih dahulu.');
+            }
+        }
+        
+        // Get quiz untuk level ini
+        $quiz = Quiz::where('category_id', $categoryId)
+            ->where('level_id', $levelId)
+            ->first();
+        
+        return view('materials.show', compact('material', 'level', 'quiz'));
     }
 }

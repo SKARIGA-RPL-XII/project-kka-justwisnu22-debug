@@ -42,6 +42,11 @@ class User extends Authenticatable
                     ->withTimestamps();
     }
 
+    public function progress()
+    {
+        return $this->hasMany(UserProgress::class);
+    }
+
     public function getPhotoProfileUrlAttribute()
     {
         if ($this->photo_profile) {

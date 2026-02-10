@@ -9,7 +9,8 @@ class WelcomeController extends Controller
 {
     public function index()
     {
-        $materials = Material::take(6)->get();
+        $materials = Material::with(['category', 'level'])->take(6)->get();
+        
         return view('welcome', compact('materials'));
     }
 }

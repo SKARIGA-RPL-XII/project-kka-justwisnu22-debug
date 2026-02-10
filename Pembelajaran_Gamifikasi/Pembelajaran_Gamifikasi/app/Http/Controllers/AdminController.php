@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Quiz;
 use App\Models\Material;
 use App\Models\Badge;
+use App\Models\Category;
+use App\Models\CategoryLevel;
 
 class AdminController extends Controller
 {
@@ -14,69 +16,22 @@ class AdminController extends Controller
         $quizCount = Quiz::count();
         $materialCount = Material::count();
         $badgeCount = Badge::count();
+        $categoryCount = Category::count();
 
-        return view('admin.dashboard', compact('quizCount', 'materialCount', 'badgeCount'));
-    }
-
-    // Quiz CRUD
-    public function quizIndex()
-    {
-        $quizzes = Quiz::all();
-        return view('admin.quiz.index', compact('quizzes'));
-    }
-
-    public function quizCreate()
-    {
-        return view('admin.quiz.create');
-    }
-
-    public function quizStore(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'difficulty' => 'required|in:easy,medium,hard',
-            'description' => 'required|string',
-        ]);
-
-        Quiz::create($request->all());
-        return redirect()->route('admin.quiz.index')->with('success', 'Quiz berhasil ditambahkan');
-    }
-
-    public function quizEdit($id)
-    {
-        $quiz = Quiz::findOrFail($id);
-        return view('admin.quiz.edit', compact('quiz'));
-    }
-
-    public function quizUpdate(Request $request, $id)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'difficulty' => 'required|in:easy,medium,hard',
-            'description' => 'required|string',
-        ]);
-
-        $quiz = Quiz::findOrFail($id);
-        $quiz->update($request->all());
-        return redirect()->route('admin.quiz.index')->with('success', 'Quiz berhasil diupdate');
-    }
-
-    public function quizDestroy($id)
-    {
-        Quiz::findOrFail($id)->delete();
-        return redirect()->route('admin.quiz.index')->with('success', 'Quiz berhasil dihapus');
+        return view('admin.dashboard', compact('quizCount', 'materialCount', 'badgeCount', 'categoryCount'));
     }
 
     // Materials CRUD
     public function materialsIndex()
     {
-        $materials = Material::all();
+        $materials = Material::with(['category', 'level.difficulty'])->get();
         return view('admin.materials.index', compact('materials'));
     }
 
     public function materialsCreate()
     {
-        return view('admin.materials.create');
+        $categories = Category::all();
+        return view('admin.materials.create', compact('categories'));
     }
 
     public function materialsStore(Request $request)
@@ -85,6 +40,8 @@ class AdminController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
             'content' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'level_id' => 'required|exists:category_levels,id'
         ]);
 
         Material::create($request->all());
@@ -94,7 +51,9 @@ class AdminController extends Controller
     public function materialsEdit($id)
     {
         $material = Material::findOrFail($id);
-        return view('admin.materials.edit', compact('material'));
+        $categories = Category::all();
+        $levels = CategoryLevel::where('category_id', $material->category_id)->get();
+        return view('admin.materials.edit', compact('material', 'categories', 'levels'));
     }
 
     public function materialsUpdate(Request $request, $id)
@@ -103,6 +62,8 @@ class AdminController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
             'content' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'level_id' => 'required|exists:category_levels,id'
         ]);
 
         $material = Material::findOrFail($id);

@@ -4,83 +4,116 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use App\Models\UserQuizResult;
+use App\Models\UserProgress;
+use App\Models\CategoryLevel;
 use App\Services\ExpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserQuizController extends Controller
 {
-    public function index()
+    // Show quiz dari material page
+    public function show($categoryId, $levelId)
     {
-        $quizzes = Quiz::with('category')->get();
-        $categories = \App\Models\QuizCategory::all();
-        return view('quiz.index', compact('quizzes', 'categories'));
-    }
-
-    public function show($id)
-    {
-        $quiz = Quiz::with(['questions.answers', 'category'])->findOrFail($id);
+        $quiz = Quiz::with(['questions.answers', 'category', 'level'])
+            ->where('category_id', $categoryId)
+            ->where('level_id', $levelId)
+            ->firstOrFail();
         
-        // Check if user already completed this quiz
+        // Check if user already passed this quiz (score >= 75)
         $result = UserQuizResult::where('user_id', Auth::id())
-                                ->where('quiz_id', $id)
+                                ->where('quiz_id', $quiz->id)
+                                ->where('score', '>=', 75)
                                 ->first();
         
-        if ($result && $result->score > 0) {
-            return redirect()->route('quiz.index')->with('info', 'Anda sudah menyelesaikan quiz ini dengan benar!');
+        if ($result) {
+            return redirect()->route('materials.show', [$categoryId, $levelId])
+                ->with('info', 'Anda sudah menyelesaikan quiz ini dengan benar!');
         }
         
-        // Shuffle answers for each question with random seed
+        // Shuffle answers for each question
         $quiz->questions->each(function ($question) {
-            $shuffled = $question->answers->shuffle();
-            // Add random letter assignment
-            $question->shuffled_answers = $shuffled->values();
+            $question->shuffled_answers = $question->answers->shuffle()->values();
         });
         
-        return view('quiz.show', compact('quiz', 'result'));
+        return view('quiz.show', compact('quiz'));
     }
 
-    public function submit(Request $request, $id)
+    public function submit(Request $request, $categoryId, $levelId)
     {
         $request->validate([
-            'answer' => 'required|integer'
+            'answers' => 'required|array'
         ]);
 
-        $quiz = Quiz::with(['questions.answers'])->findOrFail($id);
-        $question = $quiz->questions->first();
-        $selectedAnswer = $question->answers->where('id', $request->answer)->first();
+        $quiz = Quiz::with(['questions.answers'])
+            ->where('category_id', $categoryId)
+            ->where('level_id', $levelId)
+            ->firstOrFail();
         
-        if (!$selectedAnswer) {
-            return response()->json(['error' => 'Invalid answer'], 400);
+        $totalQuestions = $quiz->questions->count();
+        $correctAnswers = 0;
+        
+        // Check each answer
+        foreach ($request->answers as $questionId => $answerId) {
+            $question = $quiz->questions->where('id', $questionId)->first();
+            if ($question) {
+                $answer = $question->answers->where('id', $answerId)->first();
+                if ($answer && $answer->is_correct) {
+                    $correctAnswers++;
+                }
+            }
         }
-
-        $isCorrect = $selectedAnswer->is_correct;
-        $earnedExp = $isCorrect ? $quiz->exp_reward : 0;
         
-        // Delete previous result if exists (for retake)
+        $scorePercentage = ($correctAnswers / $totalQuestions) * 100;
+        $isPassed = $scorePercentage >= 75; // Minimal 75% untuk lulus
+        $earnedExp = $isPassed ? $quiz->exp_reward : 0;
+        
+        // Delete previous result
         UserQuizResult::where('user_id', Auth::id())
                       ->where('quiz_id', $quiz->id)
                       ->delete();
         
-        // Save new result
+        // Save result
         UserQuizResult::create([
             'user_id' => Auth::id(),
             'quiz_id' => $quiz->id,
-            'score' => $isCorrect ? 100 : 0,
+            'score' => $scorePercentage,
             'earned_exp' => $earnedExp,
             'completed_at' => now(),
         ]);
 
-        // Add EXP if correct
         $expResult = null;
-        if ($earnedExp > 0) {
+        if ($isPassed) {
             $expResult = ExpService::addExp(Auth::user(), $earnedExp);
+            
+            // Mark level as completed
+            UserProgress::updateOrCreate(
+                ['user_id' => Auth::id(), 'level_id' => $levelId],
+                ['category_id' => $categoryId, 'status' => 'completed']
+            );
+            
+            // Unlock next level
+            $currentLevel = CategoryLevel::findOrFail($levelId);
+            $nextLevel = CategoryLevel::where('category_id', $categoryId)
+                ->where('order', $currentLevel->order + 1)
+                ->first();
+            
+            if ($nextLevel) {
+                UserProgress::firstOrCreate(
+                    ['user_id' => Auth::id(), 'level_id' => $nextLevel->id],
+                    ['category_id' => $categoryId, 'status' => 'ongoing']
+                );
+            }
         }
 
         return response()->json([
-            'correct' => $isCorrect,
+            'passed' => $isPassed,
+            'correct' => $correctAnswers,
+            'total' => $totalQuestions,
+            'score' => $scorePercentage,
             'earned_exp' => $earnedExp,
-            'exp_result' => $expResult
+            'exp_result' => $expResult,
+            'message' => $isPassed ? 'Selamat! Anda lulus!' : ($correctAnswers >= $totalQuestions - 2 ? 'Pelajari lagi!' : 'Anda harus mengerjakan ulang!')
         ]);
     }
 }

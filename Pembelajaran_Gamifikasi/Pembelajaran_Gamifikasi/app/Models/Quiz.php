@@ -13,12 +13,18 @@ class Quiz extends Model
         'title',
         'description',
         'exp_reward',
-        'category_id'
+        'category_id',
+        'level_id'
     ];
 
     public function category()
     {
-        return $this->belongsTo(QuizCategory::class, 'category_id');
+        return $this->belongsTo(Category::class);
+    }
+
+    public function level()
+    {
+        return $this->belongsTo(CategoryLevel::class, 'level_id');
     }
 
     public function questions()

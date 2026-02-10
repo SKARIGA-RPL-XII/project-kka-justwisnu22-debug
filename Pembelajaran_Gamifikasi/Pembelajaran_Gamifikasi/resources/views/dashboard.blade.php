@@ -91,91 +91,6 @@
         </div>
     </section>
 
-    <!-- Quest Section -->
-    <section class="my-[50px]">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold font-bitter mb-6 text-black">Quiz</h2>
-
-            <div class="flex justify-center gap-4">
-                <button onclick="filterQuiz('all')" class="px-6 py-2 rounded-full bg-blue-600 text-white text-sm category-btn active">All</button>
-                @foreach($categories as $category)
-                <button onclick="filterQuiz('{{ $category->name }}')" class="px-6 py-2 rounded-full bg-blue-100 text-blue-700 text-sm category-btn">{{ ucfirst($category->name) }}</button>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="mx-auto max-w-[1320px] pb-20">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" id="quiz-container">
-                @foreach($quizzes as $quiz)
-                <div
-                    class="group bg-[#2259D0] rounded-2xl p-6 shadow-xl text-white
-           transition hover:-translate-y-2 hover:shadow-2xl quiz-card cursor-pointer"
-                    data-category="{{ $quiz->category->name }}"
-                    onclick="window.location.href='{{ route('quiz.show', $quiz->id) }}'">
-                    <!-- TITLE + BADGE -->
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bitter text-2xl">{{ $quiz->title }}</h3>
-                        <span class="bg-[#0F172A] text-xs px-4 py-1 rounded-full
-                                    @if($quiz->category->name == 'easy') bg-green-600
-                                    @elseif($quiz->category->name == 'medium') bg-yellow-600
-                                    @else bg-red-600 @endif">
-                            {{ ucfirst($quiz->category->name) }}
-                        </span>
-                    </div>
-
-                    <!-- FOOTER -->
-                    <div class="flex items-center justify-between">
-
-                        <button
-                            class="w-[150px] h-[44px] my-3 flex items-center justify-center
-           rounded-xl relative overflow-hidden shadow-md
-           bg-black text-white
-           transition-all duration-500 ease-in-out
-
-           group-hover:scale-105
-           group-hover:shadow-lg">
-
-                            <span
-                                class="absolute inset-0 bg-gradient-to-r from-[#2f58af] to-[#093595]
-               -translate-x-full group-hover:translate-x-0
-               transition-transform duration-500 ease-in-out">
-                            </span>
-
-                            <span class="relative z-10">
-                                Mulai Quiz →
-                            </span>
-                        </button>
-                        <span class="bg-white text-yellow-500 text-xs font-semibold px-4 py-2 rounded-full">
-                            {{ $quiz->exp_reward }} XP
-                        </span>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-
-            <!-- SEE MORE -->
-            <div class="flex justify-center mt-14">
-                <a href="{{ route('quiz.index') }}">
-                    <button
-                        class="cursor-pointer bg-gradient-to-b from-blue-500 to-[#093595] shadow-[0px_4px_32px_0_rgba(99,102,241,.70)] px-6 py-3 rounded-xl   text-white font-medium group">
-                        <div class="relative overflow-hidden">
-                            <p
-                                class="group-hover:-translate-y-7 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">
-                                See More . . .
-                            </p>
-                            <p
-                                class="absolute top-7 left-0 group-hover:top-0 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">
-                                See More . . .
-                            </p>
-                        </div>
-                    </button>
-                </a>
-
-            </div>
-
-        </div>
-    </section>
-
     <!-- Materi Section -->
     <section class="mb-[50px]">
         <div class="mx-auto max-w-[1320px] ">
@@ -189,7 +104,7 @@
         class="group bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl
                transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
                cursor-pointer"
-        onclick="window.location.href='{{ route('materials.show', $material->id) }}'">
+        onclick="window.location.href='{{ route('materials.show', [$material->category_id, $material->level_id]) }}'">
 
         <!-- TITLE -->
         <h3 class="font-bitter text-2xl mb-4">

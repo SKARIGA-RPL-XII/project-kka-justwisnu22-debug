@@ -17,6 +17,10 @@
 </head>
 
 <body class="font-sans antialiased dark:text-white/50">
+    <script>
+        window.isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+    </script>
+    
     @include('components.navbar')
 
     <!-- Login Modal -->
@@ -206,71 +210,6 @@
 
 
 
-    <!-- Quest Section -->
-    <section class="mb-[50px]">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold font-bitter mb-6 text-black">Quest</h2>
-
-
-            <div class="flex justify-center gap-4">
-                <button class="px-6 py-2 rounded-full bg-blue-600 text-white text-sm">Easy</button>
-                <button class="px-6 py-2 rounded-full bg-blue-100 text-blue-700 text-sm">Medium</button>
-                <button class="px-6 py-2 rounded-full bg-blue-100 text-blue-700 text-sm">Hard</button>
-            </div>
-        </div>
-
-        <div class="mx-auto max-w-[1320px] pb-20">
-
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                @for ($i = 0; $i < 6; $i++)
-                    <div class="bg-[#2259D0] rounded-2xl p-6 shadow-xl text-white transition
-hover:-translate-y-2 hover:shadow-2xl">
-
-
-                    <!-- TITLE + BADGE -->
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bitter text-2xl">Basic HTML</h3>
-                        <span class="bg-[#0F172A] text-xs px-4 py-1 rounded-full">Easy</span>
-                    </div>
-
-
-                    <!-- DESKRIPSI -->
-                    <p class="text-sm leading-relaxed opacity-90 mb-6 line-clamp-3">
-                        Pelajari dasar-dasar HTML mulai dari struktur dokumen, penggunaan tag umum seperti heading,
-                        paragraf, link, dan gambar, hingga pemahaman elemen dasar untuk Pelajari dasar-dasar HTML mulai dari struktur dokumen, penggunaan tag umum seperti heading,
-                        paragraf, link, dan gambar, hingga pemahaman elemen dasar untuk
-                    </p>
-
-
-                    <!-- FOOTER -->
-                    <div class="flex items-center justify-between">
-                        <button
-                            class="bg-[#093595] hover:bg-[#2f58af] transition px-6 py-2 rounded-full text-sm">
-                            Mulai →
-                        </button>
-
-
-                        <span class="bg-white text-yellow-500 text-xs font-semibold px-4 py-2 rounded-full">
-                            10 XP
-                        </span>
-                    </div>
-            </div>
-            @endfor
-        </div>
-
-
-        <!-- SEE MORE -->
-        <div class="flex justify-center mt-14">
-            <button class="px-10 py-3 rounded-full bg-[#2259D0] text-white text-sm transition hover:bg-[#3e6dd1]">
-                See More...
-            </button>
-        </div>
-
-
-        </div>
-    </section>
-
     <!-- Materi Section -->
     <section class="mb-[50px]">
         <div class="mx-auto max-w-[1320px] ">
@@ -289,15 +228,9 @@ hover:-translate-y-2 hover:shadow-2xl">
                     <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">{{ $material->description }}</p>
 
                     <!-- BUTTON -->
-                    @auth
-                    <a href="{{ route('materials.show', $material->id) }}" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm inline-block">
+                    <a href="{{ route('materials.show', [$material->category_id, $material->level_id]) }}" onclick="return window.isAuthenticated || (openLoginModal(), false)" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm inline-block">
                         Lihat Detail →
                     </a>
-                    @else
-                    <button onclick="openLoginModal()" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm">
-                        Lihat Detail →
-                    </button>
-                    @endauth
                 </div>
                 @empty
                 <div class="col-span-full text-center py-8">
@@ -309,7 +242,7 @@ hover:-translate-y-2 hover:shadow-2xl">
             <!-- SEE MORE -->
             @if($materials->count() >= 6)
             <div class="flex justify-center mt-16">
-                <a href="{{ route('materials.index') }}" class="px-10 py-3 rounded-full bg-blue-600 text-white text-sm hover:bg-blue-700 transition">
+                <a href="{{ route('materials.index') }}" onclick="return window.isAuthenticated || (openLoginModal(), false)" class="px-10 py-3 rounded-full bg-blue-600 text-white text-sm hover:bg-blue-700 transition">
                     See More...
                 </a>
             </div>

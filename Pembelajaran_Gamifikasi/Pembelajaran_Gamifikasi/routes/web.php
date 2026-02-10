@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminQuizController;
+use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\AdminDifficultyController;
 use App\Http\Controllers\AdminBadgeController;
 use App\Http\Controllers\UserQuizController;
 use App\Http\Controllers\UserBadgeController;
@@ -19,15 +21,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 
-// Materials Routes for User
-Route::get('/materials', [MaterialController::class, 'index'])->name('materials.index');
-Route::get('/materials/{id}', [MaterialController::class, 'show'])->name('materials.show');
+// Materials Routes for User (Halaman Belajar)
+Route::get('/belajar', [MaterialController::class, 'index'])->name('materials.index');
+Route::get('/belajar/{categoryId}', [MaterialController::class, 'showCategory'])->name('materials.category');
+Route::get('/belajar/{categoryId}/{levelId}', [MaterialController::class, 'show'])->name('materials.show');
 
-// Quiz Routes for User
+// Quiz Routes for User (Terintegrasi dengan Materi)
 Route::middleware('auth')->group(function () {
-    Route::get('/quiz', [UserQuizController::class, 'index'])->name('quiz.index');
-    Route::get('/quiz/{id}', [UserQuizController::class, 'show'])->name('quiz.show');
-    Route::post('/quiz/{id}/submit', [UserQuizController::class, 'submit'])->name('quiz.submit');
+    Route::get('/quiz/{categoryId}/{levelId}', [UserQuizController::class, 'show'])->name('quiz.show');
+    Route::post('/quiz/{categoryId}/{levelId}/submit', [UserQuizController::class, 'submit'])->name('quiz.submit');
 
     // Badge Routes for User
     Route::get('/badges', [UserBadgeController::class, 'index'])->name('badges.index');
@@ -45,6 +47,13 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
+    // Difficulty Routes
+    Route::resource('difficulties', AdminDifficultyController::class);
+
+    // Category Routes
+    Route::resource('categories', AdminCategoryController::class);
+    Route::get('/categories/{categoryId}/levels', [AdminCategoryController::class, 'getLevels'])->name('categories.levels');
+
     // Quiz Routes
     Route::resource('quiz', AdminQuizController::class);
 
@@ -58,12 +67,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/materials/{id}/edit', [AdminController::class, 'materialsEdit'])->name('materials.edit');
     Route::put('/materials/{id}', [AdminController::class, 'materialsUpdate'])->name('materials.update');
     Route::delete('/materials/{id}', [AdminController::class, 'materialsDestroy'])->name('materials.destroy');
-
-    // Badges Routes
-    Route::get('/badges', [AdminController::class, 'badgesIndex'])->name('badges.index');
-    Route::get('/badges/create', [AdminController::class, 'badgesCreate'])->name('badges.create');
-    Route::post('/badges', [AdminController::class, 'badgesStore'])->name('badges.store');
-    Route::get('/badges/{id}/edit', [AdminController::class, 'badgesEdit'])->name('badges.edit');
-    Route::put('/badges/{id}', [AdminController::class, 'badgesUpdate'])->name('badges.update');
-    Route::delete('/badges/{id}', [AdminController::class, 'badgesDestroy'])->name('badges.destroy');
 });

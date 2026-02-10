@@ -38,31 +38,32 @@
                     </div>
                 @endif
                 
-                @php $question = $quiz->questions->first(); @endphp
+                @php $questions = $quiz->questions; @endphp
                 
-                <!-- Question -->
+                @foreach($questions as $qIndex => $question)
                 <div class="mb-8">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Soal:</h2>
-                    <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Soal {{ $qIndex + 1 }}:</h2>
+                    <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500 mb-4">
                         <p class="text-gray-700 leading-relaxed">{{ $question->question }}</p>
                     </div>
-                </div>
 
-                <!-- Answers -->
-                <div class="space-y-3">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Pilihan Jawaban:</h3>
-                    @foreach($question->shuffled_answers as $index => $answer)
-                        <div class="answer-option p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 transition-colors"
-                             data-answer-id="{{ $answer->id }}" data-is-correct="{{ $answer->is_correct ? 'true' : 'false' }}">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center font-semibold text-gray-600">
-                                    {{ chr(65 + $index) }}
+                    <div class="space-y-3">
+                        @foreach($question->shuffled_answers as $index => $answer)
+                            <div class="answer-option p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 transition-colors"
+                                 data-question-id="{{ $question->id }}"
+                                 data-answer-id="{{ $answer->id }}"
+                                 data-is-correct="{{ $answer->is_correct ? 'true' : 'false' }}">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center font-semibold text-gray-600">
+                                        {{ chr(65 + $index) }}
+                                    </div>
+                                    <span class="text-gray-700">{{ $answer->answer }}</span>
                                 </div>
-                                <span class="text-gray-700">{{ $answer->answer }}</span>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
+                @endforeach
 
                 <!-- Result Message -->
                 <div id="result-message" class="mt-6 p-4 rounded-lg hidden">
@@ -73,8 +74,8 @@
             <!-- Quiz Footer -->
             <div class="bg-white rounded-b-lg shadow-md p-6 border-t">
                 <div class="flex justify-between items-center">
-                    <a href="{{ route('quiz.index') }}" class="text-gray-600 hover:text-gray-800">
-                        ← Kembali ke Daftar Quiz
+                    <a href="{{ route('materials.show', [$quiz->category_id, $quiz->level_id]) }}" class="text-gray-600 hover:text-gray-800">
+                        ← Kembali ke Materi
                     </a>
                     <div class="text-sm text-gray-500">
                         Pilih salah satu jawaban di atas
@@ -85,103 +86,74 @@
     </div>
 
     <script>
-        let answered = false;
+        const answers = {};
+        const totalQuestions = {{ $quiz->questions->count() }};
         const quizId = {{ $quiz->id }};
+        const categoryId = {{ $quiz->category_id }};
+        const levelId = {{ $quiz->level_id }};
         
         document.querySelectorAll('.answer-option').forEach(option => {
             option.addEventListener('click', function() {
-                if (answered) return;
-                
+                const questionId = this.dataset.questionId;
                 const answerId = this.dataset.answerId;
-                const isCorrect = this.dataset.isCorrect === 'true';
                 
-                // Disable further clicks
-                answered = true;
-                
-                // Submit answer
-                fetch(`/quiz/${quizId}/submit`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        answer: answerId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Show results
-                    document.querySelectorAll('.answer-option').forEach(opt => {
-                        const optAnswerId = opt.dataset.answerId;
-                        const optIsCorrect = opt.dataset.isCorrect === 'true';
-                        
-                        if (optIsCorrect) {
-                            // Correct answer - green
-                            opt.classList.remove('border-gray-200', 'hover:border-blue-300');
-                            opt.classList.add('border-green-500', 'bg-green-50');
-                            opt.querySelector('.w-8').classList.add('bg-green-500', 'text-white', 'border-green-500');
-                        } else if (optAnswerId == answerId && !data.correct) {
-                            // Wrong selected answer - red
-                            opt.classList.remove('border-gray-200', 'hover:border-blue-300');
-                            opt.classList.add('border-red-500', 'bg-red-50');
-                            opt.querySelector('.w-8').classList.add('bg-red-500', 'text-white', 'border-red-500');
-                        } else {
-                            // Other options - gray
-                            opt.classList.add('opacity-50');
-                        }
-                        
-                        opt.style.cursor = 'default';
-                    });
-                    
-                    // Show result message
-                    const resultDiv = document.getElementById('result-message');
-                    const resultContent = document.getElementById('result-content');
-                    
-                    if (data.correct) {
-                        resultContent.innerHTML = `
-                            <div class="flex items-center space-x-2 text-green-700">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                                <div>
-                                    <p class="font-semibold">Benar! 🎉</p>
-                                    <p class="text-sm">Anda mendapatkan ${data.earned_exp} EXP!</p>
-                                    ${data.exp_result && data.exp_result.leveled_up ? 
-                                        `<p class="text-sm font-semibold text-blue-600">🎊 Level Up! Level ${data.exp_result.new_level}</p>` : ''}
-                                </div>
-                            </div>
-                        `;
-                        resultDiv.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-300';
-                    } else {
-                        resultContent.innerHTML = `
-                            <div class="flex items-center space-x-2 text-red-700">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                </svg>
-                                <div>
-                                    <p class="font-semibold">Salah! 😔</p>
-                                    <p class="text-sm">Tidak mendapatkan EXP. Coba lagi next time!</p>
-                                </div>
-                            </div>
-                        `;
-                        resultDiv.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-300';
-                    }
-                    
-                    resultDiv.classList.remove('hidden');
-                    
-                    // Auto redirect after 3 seconds
-                    setTimeout(() => {
-                        window.location.href = '/quiz';
-                    }, 3000);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan. Silakan coba lagi.');
-                    answered = false;
+                // Deselect other answers for this question
+                document.querySelectorAll(`[data-question-id="${questionId}"]`).forEach(opt => {
+                    opt.classList.remove('border-blue-500', 'bg-blue-50');
                 });
+                
+                // Select this answer
+                this.classList.add('border-blue-500', 'bg-blue-50');
+                answers[questionId] = answerId;
+                
+                // Check if all questions answered
+                if (Object.keys(answers).length === totalQuestions) {
+                    submitQuiz();
+                }
             });
         });
+        
+        function submitQuiz() {
+            fetch(`/quiz/${categoryId}/${levelId}/submit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ answers })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result-message');
+                const resultContent = document.getElementById('result-content');
+                
+                if (data.passed) {
+                    resultContent.innerHTML = `
+                        <div class="text-green-700">
+                            <p class="font-semibold text-xl">🎉 Selamat! Anda Lulus!</p>
+                            <p class="text-sm mt-2">Benar: ${data.correct}/${data.total} (${Math.round(data.score)}%)</p>
+                            <p class="text-sm">EXP: +${data.earned_exp}</p>
+                        </div>
+                    `;
+                    resultDiv.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-300';
+                } else {
+                    resultContent.innerHTML = `
+                        <div class="text-red-700">
+                            <p class="font-semibold text-xl">😔 ${data.message}</p>
+                            <p class="text-sm mt-2">Benar: ${data.correct}/${data.total} (${Math.round(data.score)}%)</p>
+                            <p class="text-sm">Minimal 75% untuk lulus</p>
+                        </div>
+                    `;
+                    resultDiv.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-300';
+                }
+                
+                resultDiv.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    window.location.href = `/belajar/${categoryId}/${levelId}`;
+                }, 3000);
+            });
+        }
     </script>
 </body>
 </html>

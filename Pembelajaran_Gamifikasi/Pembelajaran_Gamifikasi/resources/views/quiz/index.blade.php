@@ -10,9 +10,21 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-gray-100">
+<body class="font-sans antialiased ">
     <!-- Navigation -->
     @include('components.navbar')
+
+    <!-- Banner -->
+    <section class="banner">
+        <div
+            class="relative top-[-20px] z-0 h-[500px] bg-cover bg-center bg-no-repeat"
+            style="background-image: url('/images/baner.jpg');">
+            <!-- OVERLAY -->
+            <div class="absolute inset-0 bg-[#1552D8]/40"></div>
+        </div>
+
+    </section>
+    <div class="relative top-[-65px] w-full h-[45px] " style="background-image: url('/images/pemisah.png')"></div>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="mb-8">
