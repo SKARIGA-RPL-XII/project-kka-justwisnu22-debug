@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $level->title }} - AKU DEV</title>
     <link href="https://fonts.bunny.net/css?family=lumanosimo:400&family=bitter:400,500,600,700&family=montserrat:400,500,600,700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50">
@@ -26,9 +28,32 @@
             </span>
 
             @if($material)
-            <div class="prose max-w-none mt-6">
-                {!! $material->content !!}
+           <div class="prose max-w-full mt-6 break-words overflow-x-auto
+            [&_img]:max-w-full [&_img]:h-auto">
+    {!! $material->content !!}
+</div>
+            
+            @auth
+            @php
+                $progress = \App\Models\UserMaterialProgress::where('user_id', Auth::id())
+                                                              ->where('material_id', $material->id)
+                                                              ->first();
+                $hasClaimed = $progress && $progress->exp_claimed_at;
+            @endphp
+            
+            <div class="mt-6 text-center">
+                @if($hasClaimed)
+                <button disabled class="px-8 py-3 bg-gray-400 text-white rounded-lg cursor-not-allowed font-semibold">
+                    ✓ EXP Sudah Diklaim
+                </button>
+                @else
+                <button onclick="claimExp({{ $material->id }}, {{ $material->exp_reward }})" 
+                        class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
+                    Sudah Membaca Materi & Dapatkan {{ $material->exp_reward }} EXP
+                </button>
+                @endif
             </div>
+            @endauth
             @else
             <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p class="text-yellow-800">Materi untuk level ini belum tersedia.</p>
@@ -51,5 +76,45 @@
         </div>
         @endif
     </div>
+    
+    <script>
+        function claimExp(materialId, expReward) {
+            fetch(`/materials/${materialId}/claim-exp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        confirmButtonColor: '#16a34a'
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: data.message,
+                        confirmButtonColor: '#dc2626'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan. Silakan coba lagi.',
+                    confirmButtonColor: '#dc2626'
+                });
+            });
+        }
+    </script>
 </body>
 </html>

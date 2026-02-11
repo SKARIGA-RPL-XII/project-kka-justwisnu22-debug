@@ -117,9 +117,51 @@
                         </div>
 
                         <div>
+                            <label for="category_id" class="block text-sm font-semibold text-slate-300 mb-3">Kategori</label>
+                            <select name="category_id" id="category_id" required
+                                class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all duration-200">
+                                <option value="">Pilih Kategori</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $material->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="level_id" class="block text-sm font-semibold text-slate-300 mb-3">Tingkat</label>
+                            <select name="level_id" id="level_id" required
+                                class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all duration-200">
+                                <option value="">Pilih Tingkat</option>
+                                @foreach($levels as $level)
+                                <option value="{{ $level->id }}" {{ old('level_id', $material->level_id) == $level->id ? 'selected' : '' }}>
+                                    {{ $level->title }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('level_id')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="exp_reward" class="block text-sm font-semibold text-slate-300 mb-3">EXP Reward</label>
+                            <input type="number" name="exp_reward" id="exp_reward" required min="0
+                                class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400 transition-all duration-200"
+                                value="{{ old('exp_reward', $material->exp_reward) }}" placeholder="Contoh: 50">
+                            @error('exp_reward')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
                             <label for="content" class="block text-sm font-semibold text-slate-300 mb-3">Content</label>
                             <div class="bg-slate-700/50 border border-slate-600 rounded-lg overflow-hidden">
-                                <textarea name="content" id="editor" rows="12" class="w-full bg-transparent text-white placeholder-slate-400 resize-none border-0 focus:ring-0">{{ old('content', $material->content) }}</textarea>
+                                <textarea name="content" id="content" rows="12" class="w-full bg-transparent text-white placeholder-slate-400 resize-none border-0 focus:ring-0">{{ old('content', $material->content) }}</textarea>
                             </div>
                             @error('content')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
@@ -137,45 +179,32 @@
         </main>
     </div>
 
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
     <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'), {
-                toolbar: {
-                    items: [
-                        'heading', '|',
-                        'bold', 'italic', 'link', '|',
-                        'bulletedList', 'numberedList', '|',
-                        'outdent', 'indent', '|',
-                        'blockQuote', 'insertTable', '|',
-                        'undo', 'redo'
-                    ]
-                },
-                // Dark theme configuration
-                ui: {
-                    poweredBy: {
-                        position: 'inside',
-                        side: 'right',
-                        label: 'This is a CKEditor 5 instance.'
-                    }
-                }
-            })
-            .then(editor => {
-                // Apply dark theme styles
-                const editable = editor.ui.getEditableElement();
-                editable.style.backgroundColor = 'rgb(51 65 85 / 0.5)';
-                editable.style.color = 'white';
-                editable.style.border = 'none';
-                
-                // Handle form submission
-                document.getElementById('editForm').addEventListener('submit', function(e) {
-                    // Update textarea with editor content before submit
-                    document.querySelector('#editor').value = editor.getData();
-                });
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        CKEDITOR.replace('content', {
+            height: 400
+        });
+        
+        // Dynamic level loading based on category
+        document.getElementById('category_id').addEventListener('change', function() {
+            const categoryId = this.value;
+            const levelSelect = document.getElementById('level_id');
+            
+            levelSelect.innerHTML = '<option value="">Pilih Tingkat</option>';
+            
+            if (categoryId) {
+                fetch(`/admin/categories/${categoryId}/levels`)
+                    .then(response => response.json())
+                    .then(levels => {
+                        levels.forEach(level => {
+                            const option = document.createElement('option');
+                            option.value = level.id;
+                            option.textContent = level.title;
+                            levelSelect.appendChild(option);
+                        });
+                    });
+            }
+        });
     </script>
 </body>
 

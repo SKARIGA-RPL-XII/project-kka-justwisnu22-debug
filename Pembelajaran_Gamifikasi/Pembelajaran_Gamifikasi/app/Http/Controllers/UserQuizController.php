@@ -20,23 +20,17 @@ class UserQuizController extends Controller
             ->where('level_id', $levelId)
             ->firstOrFail();
         
-        // Check if user already passed this quiz (score >= 75)
-        $result = UserQuizResult::where('user_id', Auth::id())
+        // Check if user already took this quiz
+        $previousResult = UserQuizResult::where('user_id', Auth::id())
                                 ->where('quiz_id', $quiz->id)
-                                ->where('score', '>=', 75)
                                 ->first();
-        
-        if ($result) {
-            return redirect()->route('materials.show', [$categoryId, $levelId])
-                ->with('info', 'Anda sudah menyelesaikan quiz ini dengan benar!');
-        }
         
         // Shuffle answers for each question
         $quiz->questions->each(function ($question) {
             $question->shuffled_answers = $question->answers->shuffle()->values();
         });
         
-        return view('quiz.show', compact('quiz'));
+        return view('quiz.show', compact('quiz', 'previousResult'));
     }
 
     public function submit(Request $request, $categoryId, $levelId)
@@ -65,44 +59,67 @@ class UserQuizController extends Controller
         }
         
         $scorePercentage = ($correctAnswers / $totalQuestions) * 100;
-        $isPassed = $scorePercentage >= 75; // Minimal 75% untuk lulus
-        $earnedExp = $isPassed ? $quiz->exp_reward : 0;
+        $isPassed = $scorePercentage >= 75;
         
-        // Delete previous result
-        UserQuizResult::where('user_id', Auth::id())
-                      ->where('quiz_id', $quiz->id)
-                      ->delete();
+        // Get previous result
+        $previousResult = UserQuizResult::where('user_id', Auth::id())
+                                        ->where('quiz_id', $quiz->id)
+                                        ->first();
         
-        // Save result
-        UserQuizResult::create([
-            'user_id' => Auth::id(),
-            'quiz_id' => $quiz->id,
-            'score' => $scorePercentage,
-            'earned_exp' => $earnedExp,
-            'completed_at' => now(),
-        ]);
-
-        $expResult = null;
-        if ($isPassed) {
-            $expResult = ExpService::addExp(Auth::user(), $earnedExp);
-            
-            // Mark level as completed
-            UserProgress::updateOrCreate(
-                ['user_id' => Auth::id(), 'level_id' => $levelId],
-                ['category_id' => $categoryId, 'status' => 'completed']
+        $shouldUpdate = false;
+        $earnedExp = 0;
+        
+        if (!$previousResult) {
+            // First attempt
+            $shouldUpdate = true;
+            $earnedExp = $isPassed ? $quiz->exp_reward : 0;
+        } else {
+            // Retake - only update if score is higher
+            if ($scorePercentage > $previousResult->score) {
+                $shouldUpdate = true;
+                // Calculate EXP difference
+                $oldExp = $previousResult->earned_exp;
+                $newExp = $isPassed ? $quiz->exp_reward : 0;
+                $earnedExp = $newExp - $oldExp;
+            }
+        }
+        
+        if ($shouldUpdate) {
+            // Update or create result
+            UserQuizResult::updateOrCreate(
+                ['user_id' => Auth::id(), 'quiz_id' => $quiz->id],
+                [
+                    'score' => $scorePercentage,
+                    'earned_exp' => $isPassed ? $quiz->exp_reward : 0,
+                    'completed_at' => now(),
+                ]
             );
             
-            // Unlock next level
-            $currentLevel = CategoryLevel::findOrFail($levelId);
-            $nextLevel = CategoryLevel::where('category_id', $categoryId)
-                ->where('order', $currentLevel->order + 1)
-                ->first();
+            // Add EXP if earned
+            $expResult = null;
+            if ($earnedExp > 0) {
+                $expResult = ExpService::addExp(Auth::user(), $earnedExp);
+            }
             
-            if ($nextLevel) {
-                UserProgress::firstOrCreate(
-                    ['user_id' => Auth::id(), 'level_id' => $nextLevel->id],
-                    ['category_id' => $categoryId, 'status' => 'ongoing']
+            // Mark level as completed and unlock next if passed
+            if ($isPassed) {
+                UserProgress::updateOrCreate(
+                    ['user_id' => Auth::id(), 'level_id' => $levelId],
+                    ['category_id' => $categoryId, 'status' => 'completed']
                 );
+                
+                // Unlock next level
+                $currentLevel = CategoryLevel::findOrFail($levelId);
+                $nextLevel = CategoryLevel::where('category_id', $categoryId)
+                    ->where('order', $currentLevel->order + 1)
+                    ->first();
+                
+                if ($nextLevel) {
+                    UserProgress::firstOrCreate(
+                        ['user_id' => Auth::id(), 'level_id' => $nextLevel->id],
+                        ['category_id' => $categoryId, 'status' => 'ongoing']
+                    );
+                }
             }
         }
 
@@ -111,9 +128,10 @@ class UserQuizController extends Controller
             'correct' => $correctAnswers,
             'total' => $totalQuestions,
             'score' => $scorePercentage,
-            'earned_exp' => $earnedExp,
-            'exp_result' => $expResult,
-            'message' => $isPassed ? 'Selamat! Anda lulus!' : ($correctAnswers >= $totalQuestions - 2 ? 'Pelajari lagi!' : 'Anda harus mengerjakan ulang!')
+            'earned_exp' => $shouldUpdate ? $earnedExp : 0,
+            'is_new_record' => $shouldUpdate,
+            'previous_score' => $previousResult ? $previousResult->score : null,
+            'message' => $isPassed ? 'Selamat! Anda lulus!' : 'Pelajari lagi dan coba lagi!'
         ]);
     }
 }

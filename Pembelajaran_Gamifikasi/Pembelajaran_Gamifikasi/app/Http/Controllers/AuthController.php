@@ -72,8 +72,8 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
         
-        $materials = Material::with(['category', 'level'])->take(6)->get();
+        $categories = \App\Models\Category::with('levels')->take(6)->get();
         
-        return view('dashboard', compact('materials'));
+        return view('dashboard', compact('categories'));
     }
 }

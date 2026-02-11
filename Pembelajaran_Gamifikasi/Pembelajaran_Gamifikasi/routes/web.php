@@ -25,6 +25,7 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware('auth
 Route::get('/belajar', [MaterialController::class, 'index'])->name('materials.index');
 Route::get('/belajar/{categoryId}', [MaterialController::class, 'showCategory'])->name('materials.category');
 Route::get('/belajar/{categoryId}/{levelId}', [MaterialController::class, 'show'])->name('materials.show');
+Route::post('/materials/{materialId}/claim-exp', [MaterialController::class, 'claimExp'])->middleware('auth')->name('materials.claimExp');
 
 // Quiz Routes for User (Terintegrasi dengan Materi)
 Route::middleware('auth')->group(function () {

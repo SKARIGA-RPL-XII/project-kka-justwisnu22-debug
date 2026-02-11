@@ -96,6 +96,7 @@
                         <thead class="bg-slate-700/50">
                             <tr>
                                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Title</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Kategori</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Difficulty</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Reward EXP</th>
                                 <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Actions</th>
@@ -106,11 +107,15 @@
                             <tr class="hover:bg-slate-700/30 transition-colors duration-200">
                                 <td class="px-6 py-4 whitespace-nowrap text-white font-semibold">{{ $quiz->title }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-slate-300">{{ $quiz->category->name ?? '-' }}</div>
+                                    <div class="text-xs text-slate-500">{{ $quiz->level->title ?? '-' }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-3 py-1 text-xs font-semibold rounded-full 
-                                        @if($quiz->category->name == 'easy') bg-green-500/20 text-green-300 border border-green-500/30
-                                        @elseif($quiz->category->name == 'medium') bg-yellow-500/20 text-yellow-300 border border-yellow-500/30
+                                        @if($quiz->level && $quiz->level->difficulty->name == 'easy') bg-green-500/20 text-green-300 border border-green-500/30
+                                        @elseif($quiz->level && $quiz->level->difficulty->name == 'medium') bg-yellow-500/20 text-yellow-300 border border-yellow-500/30
                                         @else bg-red-500/20 text-red-300 border border-red-500/30 @endif">
-                                        {{ ucfirst($quiz->category->name) }}
+                                        {{ $quiz->level && $quiz->level->difficulty ? ucfirst($quiz->level->difficulty->name) : '-' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -133,7 +138,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-12 text-center">
+                                <td colspan="5" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center gap-3">
                                         <svg class="w-12 h-12 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>

@@ -92,74 +92,48 @@
     </section>
 
     <!-- Materi Section -->
-    <section class="mb-[50px]">
+    <section class="my-[50px]">
         <div class="mx-auto max-w-[1320px] ">
             <!-- TITLE -->
-            <h2 class="text-4xl font-bitter font-bold text-black text-center mb-[50px]">Materi</h2>
+            <h2 class="text-4xl font-bitter font-bold text-black text-center mb-4">Pilih Kategori Belajar</h2>
+            <p class="text-center text-gray-600 mb-12">Mulai perjalanan belajarmu dari kategori yang kamu minati</p>
 
             <!-- GRID -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-    @forelse($materials as $material)
-    <div
-        class="group bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl
-               transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
-               cursor-pointer"
-        onclick="window.location.href='{{ route('materials.show', [$material->category_id, $material->level_id]) }}'">
-
-        <!-- TITLE -->
-        <h3 class="font-bitter text-2xl mb-4">
-            {{ $material->title }}
-        </h3>
-
-        <!-- DESKRIPSI -->
-        <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">
-            {{ $material->description }}
-        </p>
-
-        <!-- BUTTON (IKUT HOVER CARD) -->
-        <button
-            class="w-[160px] h-[44px] flex items-center justify-center
-                   rounded-xl relative overflow-hidden shadow-md
-                   bg-black text-white
-                   transition-all duration-500 ease-in-out
-                   group-hover:scale-105
-                   group-hover:shadow-lg">
-
-            <span
-                class="absolute inset-0 bg-gradient-to-r
-                       from-[#2f58af] to-[#093595]
-                       -translate-x-full group-hover:translate-x-0
-                       transition-transform duration-500 ease-in-out">
-            </span>
-
-            <span class="relative z-10">
-                Lihat Detail →
-            </span>
-        </button>
-    </div>
-    @empty
-    <div class="col-span-full text-center py-8">
-        <p class="text-gray-500">Belum ada materi tersedia</p>
-    </div>
-    @endforelse
-</div>
-
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @forelse($categories as $category)
+                <a href="{{ route('materials.category', $category->id) }}" class="group bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center text-4xl">
+                            @if($category->name == 'Front End Web') 🎨
+                            @elseif($category->name == 'Back End Web') ⚙️
+                            @elseif($category->name == 'UI/UX') 🎯
+                            @elseif($category->name == 'Android') 📱
+                            @else 📚
+                            @endif
+                        </div>
+                        <h3 class="text-xl font-bitter font-bold mb-2">{{ $category->name }}</h3>
+                        <p class="text-sm text-gray-600 mb-4">{{ $category->levels->count() }} Tingkatan</p>
+                        
+                        <div class="mt-4 text-blue-600 font-semibold group-hover:text-blue-700">
+                            Mulai Belajar →
+                        </div>
+                    </div>
+                </a>
+                @empty
+                <div class="col-span-full text-center py-8">
+                    <p class="text-gray-500">Belum ada kategori tersedia</p>
+                </div>
+                @endforelse
+            </div>
 
             <!-- SEE MORE -->
-            @if($materials->count() >= 6)
+            @if($categories->count() >= 6)
             <div class="flex justify-center mt-16">
                 <a href="{{ route('materials.index') }}">
-                    <button
-                        class="cursor-pointer bg-gradient-to-b from-blue-500 to-[#093595] shadow-[0px_4px_32px_0_rgba(99,102,241,.70)] px-6 py-3 rounded-xl   text-white font-medium group">
+                    <button class="cursor-pointer bg-gradient-to-b from-blue-500 to-[#093595] shadow-[0px_4px_32px_0_rgba(99,102,241,.70)] px-6 py-3 rounded-xl text-white font-medium group">
                         <div class="relative overflow-hidden">
-                            <p
-                                class="group-hover:-translate-y-7 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">
-                                See More . . .
-                            </p>
-                            <p
-                                class="absolute top-7 left-0 group-hover:top-0 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">
-                                See More . . .
-                            </p>
+                            <p class="group-hover:-translate-y-7 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">See More . . .</p>
+                            <p class="absolute top-7 left-0 group-hover:top-0 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">See More . . .</p>
                         </div>
                     </button>
                 </a>

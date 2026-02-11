@@ -14,7 +14,8 @@ class Material extends Model
         'description',
         'content',
         'category_id',
-        'level_id'
+        'level_id',
+        'exp_reward'
     ];
 
     public function category()

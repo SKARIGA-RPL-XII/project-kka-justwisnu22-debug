@@ -14,11 +14,59 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         
-        // Get learning history with progress
-        $learningHistory = \App\Models\UserProgress::with(['category', 'level.difficulty'])
-            ->where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        // Get learning history with all related data
+        $learningHistory = \App\Models\UserProgress::with([
+            'category', 
+            'level.difficulty',
+            'level.materials' => function($query) {
+                $query->select('id', 'title', 'level_id', 'category_id', 'exp_reward');
+            }
+        ])
+        ->where('user_id', $user->id)
+        ->where('status', '!=', 'locked')
+        ->orderBy('updated_at', 'desc')
+        ->get()
+        ->map(function($progress) use ($user) {
+            $material = $progress->level->materials->first();
+            
+            // Check if EXP claimed
+            $expClaimed = false;
+            if ($material) {
+                $materialProgress = \App\Models\UserMaterialProgress::where('user_id', $user->id)
+                    ->where('material_id', $material->id)
+                    ->first();
+                $expClaimed = $materialProgress && $materialProgress->exp_claimed_at;
+            }
+            
+            // Check quiz status
+            $quiz = \App\Models\Quiz::where('category_id', $progress->category_id)
+                ->where('level_id', $progress->level_id)
+                ->first();
+            
+            $quizPassed = false;
+            $quizScore = null;
+            if ($quiz) {
+                $quizResult = \App\Models\UserQuizResult::where('user_id', $user->id)
+                    ->where('quiz_id', $quiz->id)
+                    ->first();
+                if ($quizResult) {
+                    $quizPassed = $quizResult->score >= 75;
+                    $quizScore = $quizResult->score;
+                }
+            }
+            
+            return [
+                'category' => $progress->category->name,
+                'level' => $progress->level->title,
+                'difficulty' => $progress->level->difficulty->name,
+                'material_title' => $material ? $material->title : '-',
+                'last_accessed' => $progress->updated_at,
+                'status' => $progress->status,
+                'exp_claimed' => $expClaimed,
+                'quiz_passed' => $quizPassed,
+                'quiz_score' => $quizScore
+            ];
+        });
         
         return view('profile.show', compact('user', 'learningHistory'));
     }

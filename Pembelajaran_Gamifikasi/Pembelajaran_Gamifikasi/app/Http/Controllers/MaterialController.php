@@ -9,6 +9,8 @@ use App\Models\CategoryLevel;
 use App\Models\Quiz;
 use App\Models\UserProgress;
 use Illuminate\Support\Facades\Auth;
+use App\Models\UserMaterialProgress;
+use App\Services\ExpService;
 
 class MaterialController extends Controller
 {
@@ -96,5 +98,43 @@ class MaterialController extends Controller
             ->first();
         
         return view('materials.show', compact('material', 'level', 'quiz'));
+    }
+    
+    // Claim EXP from reading material
+    public function claimExp($materialId)
+    {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        
+        $material = Material::findOrFail($materialId);
+        
+        // Check if already claimed
+        $progress = UserMaterialProgress::where('user_id', Auth::id())
+                                        ->where('material_id', $materialId)
+                                        ->first();
+        
+        if ($progress && $progress->exp_claimed_at) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah mengklaim EXP untuk materi ini!'
+            ]);
+        }
+        
+        // Claim EXP
+        UserMaterialProgress::updateOrCreate(
+            ['user_id' => Auth::id(), 'material_id' => $materialId],
+            ['exp_claimed_at' => now()]
+        );
+        
+        // Add EXP to user
+        $expResult = ExpService::addExp(Auth::user(), $material->exp_reward);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil mendapatkan ' . $material->exp_reward . ' EXP!',
+            'exp_earned' => $material->exp_reward,
+            'exp_result' => $expResult
+        ]);
     }
 }

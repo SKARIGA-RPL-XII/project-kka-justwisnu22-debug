@@ -7,9 +7,37 @@
     <title>{{ $quiz->title }} - AKU DEV</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=lumanosimo:400&family=bitter:400,500,600,700&family=montserrat:400,500,600,700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-100">
+    @if(isset($previousResult) && $previousResult)
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Quiz Sudah Dikerjakan',
+                html: `
+                    <p>Anda sudah mengerjakan quiz ini sebelumnya.</p>
+                    <p class="mt-2"><strong>Nilai Sebelumnya: {{ round($previousResult->score) }}%</strong></p>
+                    <p class="mt-2 text-sm text-gray-600">Apakah Anda ingin mengerjakan ulang?</p>
+                    <p class="text-xs text-gray-500 mt-2">*Hanya nilai tertinggi yang akan disimpan</p>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Kerjakan Ulang',
+                cancelButtonText: 'Tidak, Kembali',
+                confirmButtonColor: '#2563eb',
+                cancelButtonColor: '#6b7280',
+                allowOutsideClick: false
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    window.location.href = '/belajar/{{ $quiz->category_id }}/{{ $quiz->level_id }}';
+                }
+            });
+        });
+    </script>
+    @endif
+    
     <div class="min-h-screen flex items-center justify-center py-8">
         <div class="max-w-3xl w-full mx-4">
             <!-- Quiz Header -->
@@ -127,26 +155,40 @@
                 const resultDiv = document.getElementById('result-message');
                 const resultContent = document.getElementById('result-content');
                 
-                if (data.passed) {
-                    resultContent.innerHTML = `
-                        <div class="text-green-700">
-                            <p class="font-semibold text-xl">🎉 Selamat! Anda Lulus!</p>
-                            <p class="text-sm mt-2">Benar: ${data.correct}/${data.total} (${Math.round(data.score)}%)</p>
-                            <p class="text-sm">EXP: +${data.earned_exp}</p>
-                        </div>
-                    `;
-                    resultDiv.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-300';
+                let message = '';
+                if (data.is_new_record) {
+                    if (data.passed) {
+                        message = `
+                            <div class="text-green-700">
+                                <p class="font-semibold text-xl">🎉 Selamat! Anda Lulus!</p>
+                                <p class="text-sm mt-2">Benar: ${data.correct}/${data.total} (${Math.round(data.score)}%)</p>
+                                <p class="text-sm">EXP: +${data.earned_exp}</p>
+                            </div>
+                        `;
+                        resultDiv.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-300';
+                    } else {
+                        message = `
+                            <div class="text-red-700">
+                                <p class="font-semibold text-xl">😔 ${data.message}</p>
+                                <p class="text-sm mt-2">Benar: ${data.correct}/${data.total} (${Math.round(data.score)}%)</p>
+                                <p class="text-sm">Minimal 75% untuk lulus</p>
+                            </div>
+                        `;
+                        resultDiv.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-300';
+                    }
                 } else {
-                    resultContent.innerHTML = `
-                        <div class="text-red-700">
-                            <p class="font-semibold text-xl">😔 ${data.message}</p>
-                            <p class="text-sm mt-2">Benar: ${data.correct}/${data.total} (${Math.round(data.score)}%)</p>
-                            <p class="text-sm">Minimal 75% untuk lulus</p>
+                    message = `
+                        <div class="text-yellow-700">
+                            <p class="font-semibold text-xl">📊 Nilai Tidak Berubah</p>
+                            <p class="text-sm mt-2">Nilai Anda: ${Math.round(data.score)}%</p>
+                            <p class="text-sm">Nilai Tertinggi: ${Math.round(data.previous_score)}%</p>
+                            <p class="text-xs mt-2">Nilai tertinggi tetap disimpan</p>
                         </div>
                     `;
-                    resultDiv.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-300';
+                    resultDiv.className = 'mt-6 p-4 rounded-lg bg-yellow-100 border border-yellow-300';
                 }
                 
+                resultContent.innerHTML = message;
                 resultDiv.classList.remove('hidden');
                 
                 setTimeout(() => {

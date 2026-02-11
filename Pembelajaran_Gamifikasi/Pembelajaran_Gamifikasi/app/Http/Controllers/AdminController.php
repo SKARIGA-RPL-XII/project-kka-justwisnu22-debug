@@ -41,7 +41,8 @@ class AdminController extends Controller
             'description' => 'required|string|max:500',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'level_id' => 'required|exists:category_levels,id'
+            'level_id' => 'required|exists:category_levels,id',
+            'exp_reward' => 'required|integer|min:0'
         ]);
 
         Material::create($request->all());
@@ -63,7 +64,8 @@ class AdminController extends Controller
             'description' => 'required|string|max:500',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'level_id' => 'required|exists:category_levels,id'
+            'level_id' => 'required|exists:category_levels,id',
+            'exp_reward' => 'required|integer|min:0'
         ]);
 
         $material = Material::findOrFail($id);
