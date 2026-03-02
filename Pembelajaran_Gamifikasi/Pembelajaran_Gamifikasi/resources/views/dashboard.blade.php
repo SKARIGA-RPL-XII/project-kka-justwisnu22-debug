@@ -103,12 +103,11 @@
                 @forelse($categories as $category)
                 <a href="{{ route('materials.category', $category->id) }}" class="group bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                     <div class="text-center">
-                        <div class="w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center text-4xl">
-                            @if($category->name == 'Front End Web') 🎨
-                            @elseif($category->name == 'Back End Web') ⚙️
-                            @elseif($category->name == 'UI/UX') 🎯
-                            @elseif($category->name == 'Android') 📱
-                            @else 📚
+                        <div class="w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
+                            @if($category->foto_kategori)
+                                <img src="data:image/jpeg;base64,{{ base64_encode($category->foto_kategori) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                            @else
+                                <img src="{{ asset('images/no_image.jpg') }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                             @endif
                         </div>
                         <h3 class="text-xl font-bitter font-bold mb-2">{{ $category->name }}</h3>

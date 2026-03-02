@@ -59,12 +59,28 @@
                 <p class="text-slate-400">Buat kategori pembelajaran dengan tingkatan</p>
             </div>
 
-            <form action="{{ route('admin.categories.store') }}" method="POST" class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-2xl p-8">
+            <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data" class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-2xl p-8">
                 @csrf
+                
+                @if($errors->any())
+                <div class="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-300">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
                 
                 <div class="mb-8">
                     <label class="block text-sm font-semibold text-slate-300 mb-3">Nama Kategori</label>
-                    <input type="text" name="name" required class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400 transition-all duration-200" placeholder="Contoh: Pemrograman Web">
+                    <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400 transition-all duration-200" placeholder="Contoh: Pemrograman Web">
+                </div>
+                
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-slate-300 mb-3">Foto Kategori</label>
+                    <input type="file" name="foto_kategori" accept="image/jpeg,image/jpg,image/png" class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition-all duration-200">
+                    <p class="text-xs text-slate-400 mt-2">Format: JPG, JPEG, PNG (Opsional)</p>
                 </div>
                 
                 <div class="mb-6">

@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Material;
+use App\Models\Category;
 
 class WelcomeController extends Controller
 {
     public function index()
     {
-        $materials = Material::with(['category', 'level'])->take(6)->get();
+        $categories = Category::with('levels')->get();
         
-        return view('welcome', compact('materials'));
+        return view('welcome', compact('categories'));
     }
 }

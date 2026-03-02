@@ -59,13 +59,35 @@
                 <p class="text-slate-400">Perbarui kategori pembelajaran</p>
             </div>
 
-            <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-2xl p-8">
+            <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data" class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-2xl p-8">
                 @csrf
                 @method('PUT')
                 
+                @if($errors->any())
+                <div class="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-300">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                
                 <div class="mb-8">
                     <label class="block text-sm font-semibold text-slate-300 mb-3">Nama Kategori</label>
-                    <input type="text" name="name" value="{{ $category->name }}" required class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400 transition-all duration-200" placeholder="Contoh: Pemrograman Web">
+                    <input type="text" name="name" value="{{ old('name', $category->name) }}" required class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-400 transition-all duration-200" placeholder="Contoh: Pemrograman Web">
+                </div>
+                
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-slate-300 mb-3">Foto Kategori</label>
+                    @if($category->foto_kategori)
+                    <div class="mb-3">
+                        <img src="data:image/jpeg;base64,{{ base64_encode($category->foto_kategori) }}" alt="Foto Kategori" class="w-32 h-32 object-cover rounded-lg border border-slate-600">
+                        <p class="text-xs text-slate-400 mt-1">Foto saat ini</p>
+                    </div>
+                    @endif
+                    <input type="file" name="foto_kategori" accept="image/jpeg,image/jpg,image/png" class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition-all duration-200">
+                    <p class="text-xs text-slate-400 mt-2">Format: JPG, JPEG, PNG (Opsional - kosongkan jika tidak ingin mengubah)</p>
                 </div>
                 
                 <div class="mb-6">
@@ -75,10 +97,8 @@
                         <div class="level-item bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
                             <div class="flex justify-between items-center mb-4">
                                 <h4 class="text-white font-bold">Tingkat {{ $index + 1 }}</h4>
-                                @if($index > 0)
-                                <button type="button" onclick="this.closest('.level-item').remove()" class="text-red-400 hover:text-red-300 font-semibold">Hapus</button>
-                                @endif
                             </div>
+                            <input type="hidden" name="levels[{{ $index }}][id]" value="{{ $level->id }}">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-300 mb-2">Judul Tingkat</label>

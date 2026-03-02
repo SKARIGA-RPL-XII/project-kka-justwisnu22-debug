@@ -40,6 +40,18 @@
                 @csrf
 
                 <div class="space-y-4">
+                    @if($errors->has('email'))
+                    <div class="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                        {{ $errors->first('email') }}
+                    </div>
+                    @endif
+                    
+                    @if($errors->has('password'))
+                    <div class="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                        {{ $errors->first('password') }}
+                    </div>
+                    @endif
+                    
                     <div class="[--clr:#1f1f1f] dark:[--clr:#999999] relative flex flex-row items-center">
   <input
     value=""
@@ -214,12 +226,9 @@
         }
 
         // Show login errors if any
-        @if($errors -> has('email'))
+        @if($errors->any())
         document.addEventListener('DOMContentLoaded', function() {
             openLoginModal();
-            document.getElementById('loginError').textContent = '{{ $errors->first('
-            email ') }}';
-            document.getElementById('loginError').classList.remove('hidden');
         });
         @endif
     </script>
@@ -242,41 +251,47 @@
     <section class="mb-[50px]">
         <div class="mx-auto max-w-[1320px] ">
             <!-- TITLE -->
-            <h2 class="text-4xl font-bitter font-bold text-black text-center mb-[50px]">Materi</h2>
-
+            <h2 class="text-4xl font-bitter font-bold text-black text-center mb-4">Pilih Kategori Belajar</h2>
+            <p class="text-center text-gray-600 mb-12">Mulai perjalanan belajarmu dari kategori yang kamu minati</p>
 
             <!-- GRID -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                @forelse($materials as $material)
-                <div class="bg-[#2457D6] text-white rounded-2xl p-8 shadow-xl transition hover:-translate-y-2 hover:shadow-2xl">
-                    <!-- TITLE -->
-                    <h3 class="font-bitter text-2xl mb-4">{{ $material->title }}</h3>
-
-                    <!-- DESKRIPSI -->
-                    <p class="text-sm leading-relaxed opacity-90 mb-8 line-clamp-3">{{ $material->description }}</p>
-
-                    <!-- BUTTON -->
-                    <a href="{{ route('materials.show', [$material->category_id, $material->level_id]) }}" onclick="return window.isAuthenticated || (openLoginModal(), false)" class="bg-[#0B3FAF] hover:bg-[#0A3797] transition px-6 py-2 rounded-full text-sm inline-block">
-                        Lihat Detail →
-                    </a>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @forelse($categories as $category)
+                <a href="#" onclick="openLoginModal(); return false;" class="group bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
+                            @if($category->foto_kategori)
+                                <img src="data:image/jpeg;base64,{{ base64_encode($category->foto_kategori) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                            @else
+                                <img src="{{ asset('images/no_image.jpg') }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                            @endif
+                        </div>
+                        <h3 class="text-xl text-black font-bitter font-bold mb-2">{{ $category->name }}</h3>
+                        <p class="text-sm text-black mb-4">{{ $category->levels->count() }} Tingkatan</p>
+                        
+                        <div class="mt-4 text-blue-600 font-semibold group-hover:text-blue-700">
+                            Mulai Belajar →
+                        </div>
+                    </div>
+                </a>
                 @empty
                 <div class="col-span-full text-center py-8">
-                    <p class="text-gray-500">Belum ada materi tersedia</p>
+                    <p class="text-gray-500">Belum ada kategori tersedia</p>
                 </div>
                 @endforelse
             </div>
 
             <!-- SEE MORE -->
-            @if($materials->count() >= 6)
+            @if($categories->count() >= 6)
             <div class="flex justify-center mt-16">
-                <a href="{{ route('materials.index') }}" onclick="return window.isAuthenticated || (openLoginModal(), false)" class="px-10 py-3 rounded-full bg-blue-600 text-white text-sm hover:bg-blue-700 transition">
-                    See More...
-                </a>
+                <button onclick="openLoginModal()" class="cursor-pointer bg-gradient-to-b from-blue-500 to-[#093595] shadow-[0px_4px_32px_0_rgba(99,102,241,.70)] px-6 py-3 rounded-xl text-white font-medium group">
+                    <div class="relative overflow-hidden">
+                        <p class="group-hover:-translate-y-7 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">See More . . .</p>
+                        <p class="absolute top-7 left-0 group-hover:top-0 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]">See More . . .</p>
+                    </div>
+                </button>
             </div>
             @endif
-
-
         </div>
     </section>
 

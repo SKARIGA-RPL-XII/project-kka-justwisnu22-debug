@@ -23,25 +23,35 @@ class AdminCategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'levels' => 'required|array|min:1',
-            'levels.*.title' => 'required|string|max:255',
-            'levels.*.difficulty_id' => 'required|exists:difficulties,id'
-        ]);
+        try {
+            $data = ['name' => $request->name];
+            
+            if ($request->hasFile('foto_kategori')) {
+                $file = $request->file('foto_kategori');
+                $extension = strtolower($file->getClientOriginalExtension());
+                
+                if (!in_array($extension, ['jpg', 'jpeg', 'png'])) {
+                    return back()->withErrors(['foto_kategori' => 'File harus berformat JPG, JPEG, atau PNG']);
+                }
+                
+                $data['foto_kategori'] = file_get_contents($file->getRealPath());
+            }
 
-        $category = Category::create(['name' => $request->name]);
+            $category = Category::create($data);
 
-        foreach ($request->levels as $index => $levelData) {
-            CategoryLevel::create([
-                'category_id' => $category->id,
-                'title' => $levelData['title'],
-                'difficulty_id' => $levelData['difficulty_id'],
-                'order' => $index + 1
-            ]);
+            foreach ($request->levels as $index => $levelData) {
+                CategoryLevel::create([
+                    'category_id' => $category->id,
+                    'title' => $levelData['title'],
+                    'difficulty_id' => $levelData['difficulty_id'],
+                    'order' => $index + 1
+                ]);
+            }
+
+            return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         }
-
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -53,30 +63,45 @@ class AdminCategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'levels' => 'required|array|min:1',
-            'levels.*.title' => 'required|string|max:255',
-            'levels.*.difficulty_id' => 'required|exists:difficulties,id'
-        ]);
+        try {
+            $category = Category::findOrFail($id);
+            
+            $data = ['name' => $request->name];
+            
+            if ($request->hasFile('foto_kategori')) {
+                $file = $request->file('foto_kategori');
+                $extension = strtolower($file->getClientOriginalExtension());
+                
+                if (!in_array($extension, ['jpg', 'jpeg', 'png'])) {
+                    return back()->withErrors(['foto_kategori' => 'File harus berformat JPG, JPEG, atau PNG']);
+                }
+                
+                $data['foto_kategori'] = file_get_contents($file->getRealPath());
+            }
+            
+            $category->update($data);
 
-        $category = Category::findOrFail($id);
-        $category->update(['name' => $request->name]);
+            foreach ($request->levels as $index => $levelData) {
+                if (isset($levelData['id']) && !empty($levelData['id'])) {
+                    CategoryLevel::where('id', $levelData['id'])->update([
+                        'title' => $levelData['title'],
+                        'difficulty_id' => $levelData['difficulty_id'],
+                        'order' => $index + 1
+                    ]);
+                } else {
+                    CategoryLevel::create([
+                        'category_id' => $category->id,
+                        'title' => $levelData['title'],
+                        'difficulty_id' => $levelData['difficulty_id'],
+                        'order' => $index + 1
+                    ]);
+                }
+            }
 
-        // Delete old levels
-        $category->levels()->delete();
-
-        // Create new levels
-        foreach ($request->levels as $index => $levelData) {
-            CategoryLevel::create([
-                'category_id' => $category->id,
-                'title' => $levelData['title'],
-                'difficulty_id' => $levelData['difficulty_id'],
-                'order' => $index + 1
-            ]);
+            return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diupdate');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         }
-
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diupdate');
     }
 
     public function destroy($id)
