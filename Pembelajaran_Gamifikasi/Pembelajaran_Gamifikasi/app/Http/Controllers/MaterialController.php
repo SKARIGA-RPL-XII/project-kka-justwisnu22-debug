@@ -39,6 +39,7 @@ class MaterialController extends Controller
     public function showCategory($categoryId)
     {
         $category = Category::with(['levels.difficulty'])->findOrFail($categoryId);
+        $allCategories = Category::select('id', 'name')->get();
         
         // Get user progress untuk kategori ini
         $userProgress = [];
@@ -69,7 +70,7 @@ class MaterialController extends Controller
             }
         }
         
-        return view('materials.category', compact('category', 'userProgress'));
+        return view('materials.category', compact('category', 'userProgress', 'allCategories'));
     }
 
     // Tampilkan materi berdasarkan level

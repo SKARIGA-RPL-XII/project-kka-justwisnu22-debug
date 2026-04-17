@@ -110,6 +110,18 @@ class AdminCategoryController extends Controller
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus');
     }
 
+    public function photo($id)
+    {
+        $category = Category::findOrFail($id);
+
+        if (!$category->foto_kategori) {
+            abort(404);
+        }
+
+        return response($category->foto_kategori)
+            ->header('Content-Type', 'image/jpeg');
+    }
+
     // API endpoint untuk mendapatkan levels berdasarkan category
     public function getLevels($categoryId)
     {

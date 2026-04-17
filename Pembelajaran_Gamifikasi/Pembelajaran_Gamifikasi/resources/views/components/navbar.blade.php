@@ -1,4 +1,5 @@
-<section class="bg-[#0F172A] w-full rounded-b-3xl z-10 relative">
+<div id="navbar-wrapper" style="height: var(--navbar-h)"></div>
+<section id="main-navbar" class="bg-[#0F172A] w-full rounded-b-3xl z-50 relative">
     <div class="mx-auto max-w-[1320px]  py-4 flex justify-between items-center">
         <!-- LEFT: LOGO -->
         <div class="flex items-center gap-3">
@@ -54,3 +55,39 @@
 
 <!-- Pastikan AlpineJS sudah di-load -->
 <script src="//unpkg.com/alpinejs" defer></script>
+
+<script>
+    (function () {
+        const navbar = document.getElementById('main-navbar');
+        const wrapper = document.getElementById('navbar-wrapper');
+
+        function setNavbarHeight() {
+            document.documentElement.style.setProperty('--navbar-h', navbar.offsetHeight + 'px');
+        }
+
+        function onScroll() {
+            const isFixed = navbar.classList.contains('fixed');
+            // Titik trigger: posisi top wrapper relatif ke dokumen
+            const triggerY = wrapper.getBoundingClientRect().top + window.scrollY;
+
+            if (window.scrollY >= triggerY) {
+                if (!isFixed) {
+                    setNavbarHeight();
+                    navbar.classList.remove('relative');
+                    navbar.classList.add('fixed', 'top-0', 'left-0', 'right-0');
+                    wrapper.style.display = 'block';
+                }
+            } else {
+                if (isFixed) {
+                    navbar.classList.remove('fixed', 'top-0', 'left-0', 'right-0');
+                    navbar.classList.add('relative');
+                    wrapper.style.display = 'none';
+                }
+            }
+        }
+
+        setNavbarHeight();
+        wrapper.style.display = 'none';
+        window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+</script>

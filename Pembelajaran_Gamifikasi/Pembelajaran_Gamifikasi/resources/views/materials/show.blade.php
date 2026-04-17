@@ -49,7 +49,7 @@
                 @else
                 <button onclick="claimExp({{ $material->id }}, {{ $material->exp_reward }})" 
                         class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
-                    Sudah Membaca Materi & Dapatkan {{ $material->exp_reward }} EXP
+                    Sudah Membaca Materi<!--  & Dapatkan {{ $material->exp_reward }} EXP -->
                 </button>
                 @endif
             </div>

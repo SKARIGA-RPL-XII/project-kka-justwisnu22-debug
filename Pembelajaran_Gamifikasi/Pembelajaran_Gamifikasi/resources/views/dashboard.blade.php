@@ -7,10 +7,12 @@
     <title>Dashboard - AKU DEV</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=lumanosimo:400&family=bitter:400,500,600,700&family=montserrat:400,500,600,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<div class="font-sans antialiased bg-gray-100">
+<body class="font-sans antialiased ">
     @include('components.navbar')
 
     <div class="py-0">
@@ -92,29 +94,34 @@
     </section>
 
     <!-- Materi Section -->
-    <section class="my-[50px]">
+    <section class="mt-[50px] pb-[50px]">
         <div class="mx-auto max-w-[1320px] ">
             <!-- TITLE -->
             <h2 class="text-4xl font-bitter font-bold text-black text-center mb-4">Pilih Kategori Belajar</h2>
             <p class="text-center text-gray-600 mb-12">Mulai perjalanan belajarmu dari kategori yang kamu minati</p>
 
             <!-- GRID -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($categories as $category)
                 <a href="{{ route('materials.category', $category->id) }}" class="group bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                     <div class="text-center">
                         <div class="w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
-                            @if($category->foto_kategori)
-                                <img src="data:image/jpeg;base64,{{ base64_encode($category->foto_kategori) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                            @else
-                                <img src="{{ asset('images/no_image.jpg') }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                            @endif
+                            <img src="{{ $category->foto_kategori ? route('category.photo', $category->id) : asset('images/no_image.jpg') }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                         </div>
                         <h3 class="text-xl font-bitter font-bold mb-2">{{ $category->name }}</h3>
                         <p class="text-sm text-gray-600 mb-4">{{ $category->levels->count() }} Tingkatan</p>
-                        
-                        <div class="mt-4 text-blue-600 font-semibold group-hover:text-blue-700">
-                            Mulai Belajar →
+
+                        <div class="mt-4 text-blue-600 font-semibold group relative inline-block cursor-pointer">
+
+                            <span>Mulai Belajar →</span>
+
+                            <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-blue-600
+        scale-x-0 origin-left
+        transition-transform duration-300 ease-in-out
+        group-hover:scale-x-100
+        group-hover:origin-left">
+                            </span>
+
                         </div>
                     </div>
                 </a>
@@ -126,7 +133,7 @@
             </div>
 
             <!-- SEE MORE -->
-            @if($categories->count() >= 6)
+            @if($totalCategories > 6)
             <div class="flex justify-center mt-16">
                 <a href="{{ route('materials.index') }}">
                     <button class="cursor-pointer bg-gradient-to-b from-blue-500 to-[#093595] shadow-[0px_4px_32px_0_rgba(99,102,241,.70)] px-6 py-3 rounded-xl text-white font-medium group">
@@ -141,14 +148,41 @@
         </div>
     </section>
 
+    <section class="py-[50px] my-[30px] bg-gray-50">
+        <div class="mx-auto max-w-[1320px] ">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
 
-    <div
-        class="relative bottom-[-50px] h-[50px] scale-y-[-1]"
+                <div class="md:col-span-4 bg-red-200">
+                    <div class="our-story">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-8 bg-blue-200">
+                    <h1 class="font-bold text-3xl font-lumanosimo pb-4">Our Story</h1>
+                    <p class="font-montserrat">Aku Dev lahir dari keresahan banyak pemula yang ingin belajar coding namun bingung harus mulai dari mana. Materi yang tersebar dan tidak terstruktur sering membuat proses belajar menjadi tidak efektif dan mudah terhenti di tengah jalan.
+                        <br>
+                        <br>
+                        Untuk itu, Aku Dev hadir dengan alur pembelajaran yang terarah, menggabungkan materi dan quiz dalam setiap langkah. Dengan sistem level dan EXP, pengguna diajak belajar secara bertahap dari dasar hingga mahir.
+                        <br>
+                        <br>
+                        Kami percaya belajar programming bisa dibuat lebih sederhana, terstruktur, dan menyenangkan, sehingga siapa saja dapat berkembang menjadi developer yang lebih percaya diri.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <div class="h-[50px] scale-y-[-1] mb-[-50px]"
         style="background-image: url('/images/pemisah.png');">
     </div>
     <!-- Footer -->
     <footer class="bg-[#0F172A] text-white pt-[80px] pb-8">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-7xl mx-auto px-6">
 
             <!-- GRID FOOTER -->
             <div class="grid grid-cols-12 gap-8">
@@ -157,7 +191,6 @@
                 <div class="col-span-12 md:col-span-4">
                     <img src="/images/aku_dev_logo-removebg-preview.png" alt="" class="w-[100px]">
                     <h3 class="text-xl font-lumanosimo font-semibold mb-4">Dari Nol Jadi Developer Handal</h3>
-
                 </div>
 
                 <!-- COL 2 (2/12) -->
@@ -176,7 +209,7 @@
                 <div class="col-span-6 md:col-span-2">
                     <h4 class="text-sm font-bitter font-semibold mb-4">Our Contact</h4>
                     <ul class="space-y-2 text-sm opacity-80">
-                        <li><a href="https://wa.me/6285855550057/" target="_blank" class=" font-montserrat hover:opacity-100">No. +62 858-5555-0057</a></li>
+                        <li><a href="https://wa.me/6285855550057/" target="_blank" class="font-montserrat hover:opacity-100">No. +62 858-5555-0057</a></li>
                         <li><a href="#" class="font-montserrat hover:opacity-100">Email: akudev@gmail.com</a></li>
                         <li><a href="#" class="font-montserrat hover:opacity-100">Instagram: AkuDev_</a></li>
                     </ul>
@@ -197,7 +230,17 @@
 
         </div>
     </footer>
-</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+    $('.our-story').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+    });
+</script>
 <script>
     function filterQuiz(category) {
         const cards = document.querySelectorAll('.quiz-card');

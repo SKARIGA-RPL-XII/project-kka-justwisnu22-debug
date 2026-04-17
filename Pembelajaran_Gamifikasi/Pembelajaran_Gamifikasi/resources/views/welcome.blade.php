@@ -255,16 +255,12 @@
             <p class="text-center text-gray-600 mb-12">Mulai perjalanan belajarmu dari kategori yang kamu minati</p>
 
             <!-- GRID -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($categories as $category)
                 <a href="#" onclick="openLoginModal(); return false;" class="group bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                     <div class="text-center">
                         <div class="w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
-                            @if($category->foto_kategori)
-                                <img src="data:image/jpeg;base64,{{ base64_encode($category->foto_kategori) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                            @else
-                                <img src="{{ asset('images/no_image.jpg') }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                            @endif
+                            <img src="{{ $category->foto_kategori ? route('category.photo', $category->id) : asset('images/no_image.jpg') }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                         </div>
                         <h3 class="text-xl text-black font-bitter font-bold mb-2">{{ $category->name }}</h3>
                         <p class="text-sm text-black mb-4">{{ $category->levels->count() }} Tingkatan</p>

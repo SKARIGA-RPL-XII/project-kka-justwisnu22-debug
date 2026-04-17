@@ -24,21 +24,17 @@
     </section>
     <div class="relative top-[-65px] w-full h-[45px] " style="background-image: url('/images/pemisah.png')"></div>
 
-    <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="max-w-7xl mx-auto py-12">
         <h1 class="text-4xl font-bitter font-bold text-center mb-4">Pilih Kategori Belajar</h1>
         <p class="text-center text-gray-600 mb-12">Mulai perjalanan belajarmu dari kategori yang kamu minati</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($categories as $category)
             <a href="{{ route('materials.category', $category->id) }}"
                 class="group bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                 <div class="text-center">
                     <div class="w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
-                        @if($category->foto_kategori)
-                            <img src="data:image/jpeg;base64,{{ base64_encode($category->foto_kategori) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                        @else
-                            <img src="{{ asset('images/no_image.jpg') }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                        @endif
+                        <img src="{{ $category->foto_kategori ? route('category.photo', $category->id) : asset('images/no_image.jpg') }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                     </div>
                     <h3 class="text-xl font-bitter font-bold mb-2">{{ $category->name }}</h3>
                     <p class="text-sm text-gray-600 mb-4">{{ $category->levels->count() }} Tingkatan</p>
@@ -52,16 +48,24 @@
                     @endif
                     @endauth
 
-                    <div class="mt-4 text-blue-600 font-semibold group-hover:text-blue-700">
-                        Mulai Belajar →
-                    </div>
+                   <div class="mt-4 text-blue-600 font-semibold group relative inline-block cursor-pointer">
+    
+    <span>Mulai Belajar →</span>
+
+    <span class="absolute left-0 -bottom-1 h-[2px] w-full bg-blue-600
+        scale-x-0 origin-left
+        transition-transform duration-300 ease-in-out
+        group-hover:scale-x-100
+        group-hover:origin-left">
+    </span>
+
+</div>
                 </div>
             </a>
             @endforeach
         </div>
     </div>
-    <div
-        class="relative bottom-[-50px] h-[50px] scale-y-[-1]"
+    <div class="h-[50px] scale-y-[-1] mt-12"
         style="background-image: url('/images/pemisah.png');">
     </div>
     <!-- Footer -->

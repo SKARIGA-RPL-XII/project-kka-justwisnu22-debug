@@ -86,8 +86,9 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
         
+        $totalCategories = \App\Models\Category::count();
         $categories = \App\Models\Category::with('levels')->take(6)->get();
         
-        return view('dashboard', compact('categories'));
+        return view('dashboard', compact('categories', 'totalCategories'));
     }
 }
