@@ -113,6 +113,9 @@
     </div>
 </div>
 
+
+@include('components.footer')
+
 <script>
 function previewImage(input) {
     if (input.files && input.files[0]) {

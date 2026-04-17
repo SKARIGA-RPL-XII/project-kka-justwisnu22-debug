@@ -9,6 +9,7 @@
     <link href="https://fonts.bunny.net/css?family=lumanosimo:400&family=bitter:400,500,600,700&family=montserrat:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -148,28 +149,65 @@
         </div>
     </section>
 
-    <section class="py-[50px] my-[30px] bg-gray-50">
+    <!-- Section ABOUT US -->
+    <section class="py-[50px] my-[30px] bg-gray-100">
         <div class="mx-auto max-w-[1320px] ">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
 
-                <div class="md:col-span-4 bg-red-200">
-                    <div class="our-story">
-                        <div></div>
-                        <div></div>
-                        <div></div>
+                <div class="md:col-span-4">
+                    <div class="our-story rounded-xl">
+                        <div><img class="h-[275px] w-full object-cover" src="{{ asset('images/mockup1.png') }}" alt=""></div>
+                        <div><img class="h-[275px] w-full object-cover" src="{{ asset('images/story2.jpg') }}" alt=""></div>
                     </div>
                 </div>
 
-                <div class="md:col-span-8 bg-blue-200">
-                    <h1 class="font-bold text-3xl font-lumanosimo pb-4">Our Story</h1>
-                    <p class="font-montserrat">Aku Dev lahir dari keresahan banyak pemula yang ingin belajar coding namun bingung harus mulai dari mana. Materi yang tersebar dan tidak terstruktur sering membuat proses belajar menjadi tidak efektif dan mudah terhenti di tengah jalan.
-                        <br>
-                        <br>
-                        Untuk itu, Aku Dev hadir dengan alur pembelajaran yang terarah, menggabungkan materi dan quiz dalam setiap langkah. Dengan sistem level dan EXP, pengguna diajak belajar secara bertahap dari dasar hingga mahir.
-                        <br>
-                        <br>
-                        Kami percaya belajar programming bisa dibuat lebih sederhana, terstruktur, dan menyenangkan, sehingga siapa saja dapat berkembang menjadi developer yang lebih percaya diri.
-                    </p>
+                <div class="md:col-span-8 ">
+                    <div class="ml-5">
+                        <h1 class="font-bold text-3xl font-lumanosimo pb-4">Our Story</h1>
+                        <p class="font-montserrat text-justify pb-8">Aku Dev lahir dari keresahan banyak pemula yang ingin belajar coding namun bingung harus mulai dari mana. Materi yang tersebar dan tidak terstruktur sering membuat proses belajar menjadi tidak efektif dan mudah terhenti di tengah jalan.
+                            <br>
+                            <br>
+                            Untuk itu, Aku Dev hadir dengan alur pembelajaran yang terarah, menggabungkan materi dan . . .
+                        </p>
+                        <button
+                            onclick="window.location='{{ route('about') }}'"
+                            class="group relative w-auto cursor-pointer overflow-hidden rounded-full border border-gray-200 bg-white px-5 py-2 text-center font-medium text-gray-900 shadow-sm transition-all duration-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-950 dark:text-white dark:hover:border-gray-700">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="h-2 w-2 rounded-full bg-gray-900 transition-all duration-300 group-hover:scale-[100.8] dark:bg-white"></div>
+                                <span
+                                    class="inline-block transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0">
+                                    See More
+                                </span>
+                            </div>
+
+                            <div
+                                class="absolute top-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-3 bg-gray-900 text-white opacity-0 transition-all duration-300 group-hover:-translate-x-5 group-hover:opacity-100 dark:bg-gray-100 dark:text-gray-900">
+                                <div class="flex items-center gap-3 whitespace-nowrap">
+                                    <span class="leading-none font-medium">See More</span>
+
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="h-4 w-4 leading-none"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="2.5"
+                                        aria-hidden="true">
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M3 12h14"></path>
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M13 6l6 6-6 6"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </button>
+
+                    </div>
                 </div>
 
             </div>
@@ -180,56 +218,7 @@
     <div class="h-[50px] scale-y-[-1] mb-[-50px]"
         style="background-image: url('/images/pemisah.png');">
     </div>
-    <!-- Footer -->
-    <footer class="bg-[#0F172A] text-white pt-[80px] pb-8">
-        <div class="max-w-7xl mx-auto px-6">
-
-            <!-- GRID FOOTER -->
-            <div class="grid grid-cols-12 gap-8">
-
-                <!-- COL 1 (4/12) -->
-                <div class="col-span-12 md:col-span-4">
-                    <img src="/images/aku_dev_logo-removebg-preview.png" alt="" class="w-[100px]">
-                    <h3 class="text-xl font-lumanosimo font-semibold mb-4">Dari Nol Jadi Developer Handal</h3>
-                </div>
-
-                <!-- COL 2 (2/12) -->
-                <div class="col-span-6 md:col-span-2">
-                    <h4 class="text-sm font-bitter font-semibold mb-4">Link</h4>
-                    <ul class="space-y-2 text-sm opacity-80">
-                        <li><a href="#" class="font-montserrat hover:opacity-100">Home</a></li>
-                        <li><a href="#" class="font-montserrat hover:opacity-100">Quest</a></li>
-                        <li><a href="#" class="font-montserrat hover:opacity-100">Belajar</a></li>
-                        <li><a href="#" class="font-montserrat hover:opacity-100">Badge</a></li>
-                        <li><a href="#" class="font-montserrat hover:opacity-100">About Us</a></li>
-                    </ul>
-                </div>
-
-                <!-- COL 3 (2/12) -->
-                <div class="col-span-6 md:col-span-2">
-                    <h4 class="text-sm font-bitter font-semibold mb-4">Our Contact</h4>
-                    <ul class="space-y-2 text-sm opacity-80">
-                        <li><a href="https://wa.me/6285855550057/" target="_blank" class="font-montserrat hover:opacity-100">No. +62 858-5555-0057</a></li>
-                        <li><a href="#" class="font-montserrat hover:opacity-100">Email: akudev@gmail.com</a></li>
-                        <li><a href="#" class="font-montserrat hover:opacity-100">Instagram: AkuDev_</a></li>
-                    </ul>
-                </div>
-
-                <!-- COL 4 (4/12) -->
-                <div class="col-span-12 md:col-span-4">
-                    <h4 class="text-sm font-bitter font-semibold mb-4">Our Location</h4>
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d246.9950363968931!2d112.58121981308561!3d-7.903365759255451!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1769363353465!5m2!1sid!2sid" width="300" height="150" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-
-            </div>
-
-            <!-- DIVIDER -->
-            <div class="border-t border-white/10 mt-12 pt-6 text-center text-sm opacity-70">
-                © 2026 Aku Dev. All rights reserved.
-            </div>
-
-        </div>
-    </footer>
+    @include('components.footer')
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>

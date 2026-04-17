@@ -76,6 +76,8 @@
         </div>
         @endif
     </div>
+    <div class="h-[50px] scale-y-[-1] mt-12" style="background-image: url('/images/pemisah.png');"></div>
+    @include('components.footer')
     
     <script>
         function claimExp(materialId, expReward) {
