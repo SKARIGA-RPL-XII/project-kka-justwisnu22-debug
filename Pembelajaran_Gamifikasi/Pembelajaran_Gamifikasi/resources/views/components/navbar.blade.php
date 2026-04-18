@@ -4,16 +4,17 @@
         <!-- LEFT: LOGO -->
         <div class="flex items-center gap-3">
             <img src="/images/aku_dev_logo-removebg-preview.png" alt="Aku Dev" class="w-[70px]">
-            <div class="font-lumanosimo text-3xl text-white">AKU DEV</div>
+            <div class="font-lumanosimo text-3xl text-white">AKUDEV</div>
         </div>
 
         <!-- RIGHT: MENU + AUTH -->
         <div class="flex items-center gap-6">
             <!-- MENU -->
             <nav class="flex items-center gap-5">
-                <a href="{{ Auth::check() ? route('dashboard') : route('welcome') }}" class="text-white font-lumanosimo hover:text-gray-300">Home</a>
-                <a href="{{ route('materials.index') }}" class="text-white font-lumanosimo hover:text-gray-300">Belajar</a>
-                <a href="{{ route('badges.index') }}" class="text-white font-lumanosimo hover:text-gray-300">Badge</a>
+                <a href="{{ Auth::check() ? route('dashboard') : route('welcome') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">Home</a>
+                <a href="{{ route('about') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">About Us</a>
+                <a href="{{ route('materials.index') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">Belajar</a>
+                <a href="{{ route('badges.index') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">Badge</a>
             </nav>
 
             <!-- AUTH -->

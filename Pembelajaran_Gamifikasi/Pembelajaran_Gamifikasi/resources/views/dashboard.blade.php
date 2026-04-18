@@ -36,7 +36,7 @@
             class="relative top-[-20px] z-0 h-[500px] bg-cover bg-center bg-no-repeat"
             style="background-image: url('/images/baner.jpg');">
             <!-- OVERLAY -->
-            <div class="absolute inset-0 bg-[#1552D8]/40"></div>
+            <div class="absolute inset-0 bg-[#03112F]/40"></div>
         </div>
 
     </section>
@@ -157,7 +157,7 @@
                 <div class="md:col-span-4">
                     <div class="our-story rounded-xl">
                         <div><img class="h-[275px] w-full object-cover" src="{{ asset('images/mockup1.png') }}" alt=""></div>
-                        <div><img class="h-[275px] w-full object-cover" src="{{ asset('images/story2.jpg') }}" alt=""></div>
+                        <div><img class="h-[275px] w-full object-cover" src="{{ asset('images/office2.jpg') }}" alt=""></div>
                     </div>
                 </div>
 
