@@ -14,7 +14,11 @@
                 <a href="{{ Auth::check() ? route('dashboard') : route('welcome') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">Home</a>
                 <a href="{{ route('about') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">About Us</a>
                 <a href="{{ route('materials.index') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">Belajar</a>
+                @auth
                 <a href="{{ route('badges.index') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">Badge</a>
+                @else
+                <a href="{{ route('badges.guest') }}" class="text-white font-lumanosimo transition duration-300 hover:text-gray-300">Badge</a>
+                @endauth
             </nav>
 
             <!-- AUTH -->
@@ -53,6 +57,60 @@
         </div>
     </div>
 </section>
+
+<!-- Login Modal -->
+<div id="loginModal" class="fixed inset-0 hidden z-[100] flex items-center justify-center bg-[#03112F]/80 backdrop-blur-sm">
+    <div class="bg-white/95 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 relative">
+        <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">✕</button>
+        <h2 class="text-3xl font-bold text-center text-[#03112F] mb-2">Welcome Back</h2>
+        <p class="text-center text-gray-500 text-sm mb-8">Masuk ke akun AKU DEV</p>
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="space-y-4">
+                @if($errors->has('email'))
+                <div class="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">{{ $errors->first('email') }}</div>
+                @endif
+                @if($errors->has('password'))
+                <div class="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">{{ $errors->first('password') }}</div>
+                @endif
+                <input type="email" name="email" placeholder="Email" required class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <button type="submit" class="w-full py-3 rounded-lg text-white font-semibold bg-gradient-to-r from-[#093595] to-[#03112F] hover:opacity-90 transition">Login</button>
+                <p class="text-center text-sm text-gray-600 mt-4">Belum punya akun? <button type="button" onclick="closeLoginModal(); openRegisterModal();" class="text-blue-600 hover:underline font-semibold">Daftar!</button></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Register Modal -->
+<div id="registerModal" class="fixed inset-0 hidden z-[100] flex items-center justify-center bg-[#03112F]/80 backdrop-blur-sm">
+    <div class="bg-white/95 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 relative">
+        <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">✕</button>
+        <h2 class="text-3xl font-bold text-center text-[#03112F] mb-2">Create Account</h2>
+        <p class="text-center text-gray-500 text-sm mb-8">Mulai perjalanan belajarmu 🚀</p>
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
+            <div class="space-y-4">
+                <input type="text" name="username" placeholder="Username" required class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <input type="email" name="email" placeholder="Email" required class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <input type="password" name="password_confirmation" placeholder="Konfirmasi Password" required class="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                <button type="submit" class="w-full py-3 rounded-lg text-white font-semibold bg-gradient-to-r from-[#093595] to-[#03112F] hover:opacity-90 transition">Daftar</button>
+                <p class="text-center text-sm text-gray-600 mt-4">Sudah punya akun? <button type="button" onclick="closeRegisterModal(); openLoginModal();" class="text-blue-600 hover:underline font-semibold">Login!</button></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+    function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+    function openRegisterModal() { document.getElementById('registerModal').classList.remove('hidden'); }
+    function closeRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
+    @if($errors->any() && !auth()->check())
+    document.addEventListener('DOMContentLoaded', function() { openLoginModal(); });
+    @endif
+</script>
 
 <!-- Pastikan AlpineJS sudah di-load -->
 <script src="//unpkg.com/alpinejs" defer></script>

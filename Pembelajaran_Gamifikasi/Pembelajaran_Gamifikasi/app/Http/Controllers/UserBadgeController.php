@@ -14,4 +14,10 @@ class UserBadgeController extends Controller
         
         return view('badges.index', compact('badges', 'userBadges'));
     }
+
+    public function guest()
+    {
+        $badges = Badge::all();
+        return view('badges.guest', compact('badges'));
+    }
 }

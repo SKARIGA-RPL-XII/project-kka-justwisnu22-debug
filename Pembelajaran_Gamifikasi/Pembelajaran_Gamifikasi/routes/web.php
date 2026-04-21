@@ -29,6 +29,9 @@ Route::get('/belajar/{categoryId}', [MaterialController::class, 'showCategory'])
 Route::get('/belajar/{categoryId}/{levelId}', [MaterialController::class, 'show'])->name('materials.show');
 Route::post('/materials/{materialId}/claim-exp', [MaterialController::class, 'claimExp'])->middleware('auth')->name('materials.claimExp');
 
+// Badge guest preview
+Route::get('/badges-preview', [UserBadgeController::class, 'guest'])->name('badges.guest');
+
 // Quiz Routes for User (Terintegrasi dengan Materi)
 Route::middleware('auth')->group(function () {
     Route::get('/quiz/{categoryId}/{levelId}', [UserQuizController::class, 'show'])->name('quiz.show');
@@ -37,7 +40,6 @@ Route::middleware('auth')->group(function () {
     // Badge Routes for User
     Route::get('/badges', [UserBadgeController::class, 'index'])->name('badges.index');
 
-    // Profile Routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/profile/photo/{id}', [ProfileController::class, 'photo'])
