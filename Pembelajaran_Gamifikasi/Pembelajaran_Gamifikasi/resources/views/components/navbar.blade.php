@@ -42,9 +42,9 @@
                 <!-- DROPDOWN -->
                 <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-2 z-50">
                     <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Lihat Profil</a>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" id="logout-form-user">
                         @csrf
-                        <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</button>
+                        <button type="button" onclick="document.getElementById('logoutModalUser').classList.remove('hidden')" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</button>
                     </form>
                 </div>
             </div>
@@ -102,17 +102,33 @@
     </div>
 </div>
 
+<!-- Logout Modal User -->
+<div id="logoutModalUser" class="fixed inset-0 hidden z-[200] flex items-center justify-center bg-[#03112F]/80 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-8 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">Konfirmasi Logout</h3>
+        <p class="text-gray-500 text-sm mb-6">Apakah kamu yakin ingin keluar dari akun ini?</p>
+        <div class="flex gap-3 justify-center">
+            <button onclick="document.getElementById('logoutModalUser').classList.add('hidden')" class="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition font-medium">Batal</button>
+            <button onclick="document.getElementById('logout-form-user').submit()" class="px-6 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition font-medium">Ya, Logout</button>
+        </div>
+    </div>
+</div>
+
 <script>
     function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
     function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
     function openRegisterModal() { document.getElementById('registerModal').classList.remove('hidden'); }
     function closeRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
-    @if($errors->any() && !auth()->check())
+    @if(isset($errors) && $errors->any() && !auth()->check())
     document.addEventListener('DOMContentLoaded', function() { openLoginModal(); });
     @endif
 </script>
 
-<!-- Pastikan AlpineJS sudah di-load -->
 <script src="//unpkg.com/alpinejs" defer></script>
 
 <script>

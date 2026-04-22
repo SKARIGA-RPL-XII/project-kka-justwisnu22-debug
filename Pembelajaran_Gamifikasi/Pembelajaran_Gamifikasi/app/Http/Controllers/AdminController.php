@@ -8,17 +8,56 @@ use App\Models\Material;
 use App\Models\Badge;
 use App\Models\Category;
 use App\Models\CategoryLevel;
+use App\Models\UserQuizResult;
+use App\Models\User;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
-        $quizCount = Quiz::count();
+        // Statistik dasar
+        $quizCount     = Quiz::count();
         $materialCount = Material::count();
-        $badgeCount = Badge::count();
+        $badgeCount    = Badge::count();
         $categoryCount = Category::count();
+        $userCount     = User::where('role', '!=', 'admin')->count();
+        $quizDoneCount = UserQuizResult::count();
 
-        return view('admin.dashboard', compact('quizCount', 'materialCount', 'badgeCount', 'categoryCount'));
+        // Ringkasan badge: total user yang punya badge
+        $totalUserWithBadge = User::whereHas('badges')->count();
+
+        // 5 badge terbaru yang diperoleh user
+        $recentUserBadges = Badge::with(['users' => fn($q) => $q->select('users.id', 'users.username')->orderByPivot('earned_at', 'desc')->limit(5)])
+            ->get()
+            ->flatMap(fn($badge) => $badge->users->map(fn($user) => [
+                'username'  => $user->username,
+                'badge'     => $badge->title,
+                'earned_at' => $user->pivot->earned_at,
+            ]))
+            ->sortByDesc('earned_at')
+            ->take(5)
+            ->values();
+
+        // Data grafik: jumlah user per badge
+        $badgeChartLabels = Badge::withCount('users')->get()->pluck('title');
+        $badgeChartData   = Badge::withCount('users')->get()->pluck('users_count');
+
+        // Data grafik: materi per kategori
+        $categoryChartLabels  = Category::withCount('materials')->get()->pluck('name');
+        $categoryChartData    = Category::withCount('materials')->get()->pluck('materials_count');
+
+        // Data grafik: materi vs quiz vs quiz dikerjakan
+        $overviewLabels = ['Materi', 'Quiz', 'Quiz Dikerjakan'];
+        $overviewData   = [$materialCount, $quizCount, $quizDoneCount];
+
+        return view('admin.dashboard', compact(
+            'quizCount', 'materialCount', 'badgeCount', 'categoryCount',
+            'userCount', 'quizDoneCount', 'totalUserWithBadge',
+            'recentUserBadges',
+            'badgeChartLabels', 'badgeChartData',
+            'categoryChartLabels', 'categoryChartData',
+            'overviewLabels', 'overviewData'
+        ));
     }
 
     // Materials CRUD

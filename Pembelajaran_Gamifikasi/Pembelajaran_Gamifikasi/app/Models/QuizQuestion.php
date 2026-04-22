@@ -9,7 +9,7 @@ class QuizQuestion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['quiz_id', 'question'];
+    protected $fillable = ['quiz_id', 'question', 'timer'];
 
     public function quiz()
     {
@@ -19,5 +19,11 @@ class QuizQuestion extends Model
     public function answers()
     {
         return $this->hasMany(QuizAnswer::class, 'question_id');
+    }
+
+    // Accessor: acak urutan jawaban saat ditampilkan ke user
+    public function getShuffledAnswersAttribute()
+    {
+        return $this->answers->shuffle();
     }
 }

@@ -13,6 +13,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\WelcomeController;
 
+use App\Http\Controllers\ReportController;
+
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/about', [\App\Http\Controllers\AboutController::class, 'index'])->name('about');
 Route::get('/category/photo/{id}', [AdminCategoryController::class, 'photo'])->name('category.photo');
@@ -72,4 +74,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/materials/{id}/edit', [AdminController::class, 'materialsEdit'])->name('materials.edit');
     Route::put('/materials/{id}', [AdminController::class, 'materialsUpdate'])->name('materials.update');
     Route::delete('/materials/{id}', [AdminController::class, 'materialsDestroy'])->name('materials.destroy');
+
+    // Report Routes
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 });

@@ -30,6 +30,7 @@ class AdminQuizController extends Controller
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:category_levels,id',
             'exp_reward' => 'required|integer|min:1',
+            'timer' => 'required|integer|min:5|max:300',
             'questions' => 'required|array|min:1',
             'questions.*.question' => 'required|string',
             'questions.*.answers' => 'required|array|size:4',
@@ -49,6 +50,7 @@ class AdminQuizController extends Controller
             $question = QuizQuestion::create([
                 'quiz_id' => $quiz->id,
                 'question' => $questionData['question'],
+                'timer' => $request->timer, // Ambil dari input timer quiz
             ]);
 
             foreach ($questionData['answers'] as $index => $answer) {
@@ -78,6 +80,7 @@ class AdminQuizController extends Controller
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:category_levels,id',
             'exp_reward' => 'required|integer|min:1',
+            'timer' => 'required|integer|min:5|max:300',
             'questions' => 'required|array|min:1',
             'questions.*.question' => 'required|string',
             'questions.*.answers' => 'required|array|size:4',
@@ -101,6 +104,7 @@ class AdminQuizController extends Controller
             $question = QuizQuestion::create([
                 'quiz_id' => $quiz->id,
                 'question' => $questionData['question'],
+                'timer' => $request->timer, // Ambil dari input timer quiz
             ]);
 
             foreach ($questionData['answers'] as $index => $answer) {
