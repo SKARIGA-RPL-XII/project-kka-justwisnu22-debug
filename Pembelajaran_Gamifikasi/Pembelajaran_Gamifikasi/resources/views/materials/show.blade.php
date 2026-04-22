@@ -68,7 +68,7 @@
             <h2 class="text-2xl font-bitter font-bold mb-2">📝 Quiz</h2>
             <p class="text-gray-600 mb-4">Uji pemahamanmu dengan mengerjakan quiz</p>
             <p class="text-sm text-gray-700 mb-4">
-                ⏱️ Waktu pengerjaan: {{ $quiz->timer }} detik
+                ⏱️ Waktu pengerjaan: {{ $quiz->questions->first()->timer ?? 30 }} detik
             </p>
             <a href="{{ route('quiz.show', [$level->category_id, $level->id]) }}"
                 class="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">

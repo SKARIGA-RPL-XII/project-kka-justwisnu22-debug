@@ -14,9 +14,9 @@ class ReportController extends Controller
     {
         // Laporan user yang mendapat badge beserta tanggal
         $userBadges = Badge::with(['users' => function ($q) {
-                $q->select('users.id', 'users.username')
-                  ->orderByPivot('earned_at', 'desc');
-            }])
+            $q->select('users.id', 'users.username')
+                ->orderByPivot('earned_at', 'desc');
+        }])
             ->get()
             ->flatMap(function ($badge) {
                 return $badge->users->map(fn($user) => [
@@ -28,6 +28,14 @@ class ReportController extends Controller
             ->sortByDesc('earned_at')
             ->values();
 
+        // Data untuk grafik pengguna per badge
+        $badgeStats = Badge::withCount('users')->get()->map(function ($badge) {
+            return [
+                'badge' => $badge->title,
+                'count' => $badge->users_count,
+            ];
+        });
+
         // Laporan jumlah materi per kategori
         $materialsPerCategory = Category::withCount('materials')->get();
 
@@ -36,6 +44,7 @@ class ReportController extends Controller
 
         return view('admin.reports.index', compact(
             'userBadges',
+            'badgeStats',
             'materialsPerCategory',
             'totalQuizDone'
         ));

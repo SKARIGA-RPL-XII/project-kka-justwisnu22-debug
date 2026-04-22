@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,16 +12,41 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.3; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
         }
+
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%      { transform: translateX(-6px); }
-            40%      { transform: translateX(6px); }
-            60%      { transform: translateX(-4px); }
-            80%      { transform: translateX(4px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-6px);
+            }
+
+            40% {
+                transform: translateX(6px);
+            }
+
+            60% {
+                transform: translateX(-4px);
+            }
+
+            80% {
+                transform: translateX(4px);
+            }
         }
+
         .timer-panic {
             animation: blink 0.6s ease-in-out infinite, shake 0.5s ease-in-out infinite;
             color: #dc2626 !important;
@@ -29,6 +55,7 @@
         }
     </style>
 </head>
+
 <body class="font-sans antialiased bg-gray-100">
 
     @if(isset($previousResult) && $previousResult)
@@ -59,8 +86,8 @@
     @endif
 
     @php
-        // Ambil timer dari soal pertama sebagai durasi satu quiz
-        $quizTimer = $quiz->questions->first()->timer ?? 30;
+    // Ambil timer dari soal pertama sebagai durasi satu quiz
+    $quizTimer = $quiz->questions->first()->timer ?? 30;
     @endphp
 
     <div class="min-h-screen flex items-center justify-center py-8">
@@ -85,10 +112,10 @@
 
                     {{-- SATU TIMER untuk seluruh quiz --}}
                     <div id="quiz-timer"
-                         class="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-blue-400 bg-blue-50 text-blue-700 font-bold text-sm transition-all duration-300">
+                        class="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-blue-400 bg-blue-50 text-blue-700 font-bold text-sm transition-all duration-300">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span id="timer-text">{{ $quizTimer }}s</span>
                     </div>
@@ -117,8 +144,8 @@
                     <div class="space-y-3">
                         @foreach($question->shuffled_answers as $index => $answer)
                         <div class="answer-option p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 transition-colors"
-                             data-question-id="{{ $question->id }}"
-                             data-answer-id="{{ $answer->id }}">
+                            data-question-id="{{ $question->id }}"
+                            data-answer-id="{{ $answer->id }}">
                             <div class="flex items-center space-x-3">
                                 <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center font-semibold text-gray-600">
                                     {{ chr(65 + $index) }}
@@ -151,16 +178,32 @@
     </div>
 
     <script>
-        const answers        = {};
-        const totalQuestions = {{ $quiz->questions->count() }};
-        const categoryId     = {{ $quiz->category_id }};
-        const levelId        = {{ $quiz->level_id }};
-        const panicAt        = 10; // detik mulai efek panik
+        const answers = {};
+        const totalQuestions = {
+            {
+                $quiz - > questions - > count()
+            }
+        };
+        const categoryId = {
+            {
+                $quiz - > category_id
+            }
+        };
+        const levelId = {
+            {
+                $quiz - > level_id
+            }
+        };
+        const panicAt = 10; // detik mulai efek panik
 
         // ── Satu countdown timer untuk seluruh quiz ────────────────────
-        let remaining  = {{ $quizTimer }};
-        const timerEl  = document.getElementById('quiz-timer');
-        const textEl   = document.getElementById('timer-text');
+        let remaining = {
+            {
+                $quizTimer
+            }
+        };
+        const timerEl = document.getElementById('quiz-timer');
+        const textEl = document.getElementById('timer-text');
 
         const countdown = setInterval(() => {
             remaining--;
@@ -181,9 +224,9 @@
 
         // ── Pilih jawaban ──────────────────────────────────────────────
         document.querySelectorAll('.answer-option').forEach(option => {
-            option.addEventListener('click', function () {
+            option.addEventListener('click', function() {
                 const questionId = this.dataset.questionId;
-                const answerId   = this.dataset.answerId;
+                const answerId = this.dataset.answerId;
 
                 document.querySelectorAll(`[data-question-id="${questionId}"]`).forEach(opt => {
                     opt.classList.remove('border-blue-500', 'bg-blue-50');
@@ -209,57 +252,62 @@
             });
 
             fetch(`/quiz/${categoryId}/${levelId}/submit`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({ answers })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv     = document.getElementById('result-message');
-                const resultContent = document.getElementById('result-content');
-                let message = '';
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        answers
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById('result-message');
+                    const resultContent = document.getElementById('result-content');
+                    let message = '';
 
-                if (data.is_new_record) {
-                    if (data.passed) {
-                        message = `
+                    if (data.is_new_record) {
+                        if (data.passed) {
+                            message = `
                             <div class="text-green-700">
                                 <p class="font-semibold text-xl">🎉 Selamat! Anda Lulus!</p>
                                 <p class="text-sm mt-2">Benar: ${data.correct}/${data.total} (${Math.round(data.score)}%)</p>
                                 <p class="text-sm">EXP: +${data.earned_exp}</p>
                             </div>`;
-                        resultDiv.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-300';
-                    } else {
-                        message = `
+                            resultDiv.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-300';
+                        } else {
+                            message = `
                             <div class="text-red-700">
                                 <p class="font-semibold text-xl">😔 ${data.message}</p>
                                 <p class="text-sm mt-2">Benar: ${data.correct}/${data.total} (${Math.round(data.score)}%)</p>
                                 <p class="text-sm">Minimal 75% untuk lulus</p>
                             </div>`;
-                        resultDiv.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-300';
-                    }
-                } else {
-                    message = `
+                            resultDiv.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-300';
+                        }
+                    } else {
+                        message = `
                         <div class="text-yellow-700">
                             <p class="font-semibold text-xl">📊 Nilai Tidak Berubah</p>
                             <p class="text-sm mt-2">Nilai Anda: ${Math.round(data.score)}%</p>
                             <p class="text-sm">Nilai Tertinggi: ${Math.round(data.previous_score)}%</p>
                             <p class="text-xs mt-2">Nilai tertinggi tetap disimpan</p>
                         </div>`;
-                    resultDiv.className = 'mt-6 p-4 rounded-lg bg-yellow-100 border border-yellow-300';
-                }
+                        resultDiv.className = 'mt-6 p-4 rounded-lg bg-yellow-100 border border-yellow-300';
+                    }
 
-                resultContent.innerHTML = message;
-                resultDiv.classList.remove('hidden');
-                resultDiv.scrollIntoView({ behavior: 'smooth' });
+                    resultContent.innerHTML = message;
+                    resultDiv.classList.remove('hidden');
+                    resultDiv.scrollIntoView({
+                        behavior: 'smooth'
+                    });
 
-                setTimeout(() => {
-                    window.location.href = `/belajar/${categoryId}/${levelId}`;
-                }, 3000);
-            });
+                    setTimeout(() => {
+                        window.location.href = `/belajar/${categoryId}/${levelId}`;
+                    }, 3000);
+                });
         }
     </script>
 </body>
+
 </html>
